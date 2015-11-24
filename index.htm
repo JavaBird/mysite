@@ -52,11 +52,11 @@
                       </div>
                       <!-- Collect the nav links, forms, and other content for toggling -->
                       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav navbar-right">
+                        <ul id="menu" class="nav navbar-nav navbar-right">
                           <li class="active"><a href="#">首页</a></li>
                           <li><a href="#">前沿资讯</a></li>
-                          <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">前端设计<span class="caret"></span></a>
+                          <li >
+                            <a href="www.baidu.com" id="aa" >前端设计<span class="caret" ></span></a>
                             <ul class="dropdown-menu">
                               <li><a href="#">HTML</a></li>
                               <li><a href="#">CSS</a></li>
@@ -66,7 +66,7 @@
                             </ul>
                           </li>
                           <li>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">服务器端开发<span class="caret"></span></a>
+                            <a href="www.baidu.com"  >服务器端开发<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                               <li><a href="#">Java</a></li>
                               <li><a href="#">Php</a></li>
@@ -76,7 +76,7 @@
                             </ul>
                           </li>
                            <li>
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">数据库开发<span class="caret"></span></a>
+                            <a href="www.baidu.com"   >数据库开发<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                               <li><a href="#">MySql</a></li>
                               <li><a href="#">Oracle</a></li>
@@ -290,5 +290,35 @@
     <script src="js/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript">
+
+        $(function(){
+
+         /* $(ul[class="nav navbar-nav navbar-right"] > li > a).on('hover', function(event) {
+            event.preventDefault();
+            
+            $(this).
+          });
+*/      
+          $( "#menu" ).menu(
+
+            { position: { my: "left top", at: "right-100 top+40" } }
+
+          );
+          
+
+
+
+        });
+
+
+
+
+
+
+
+
+    </script>
   </body>
 </html>
