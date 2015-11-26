@@ -175,7 +175,8 @@ final class template_cache {
 							$str .= '$offset = ($page - 1) * $pagesize;';
 							$limit = '$offset,$pagesize';
 							$sql = 'SELECT COUNT(*) as count FROM ('.$datas['sql'].') T';
-							$str .= '$r = $get_db->sql_query("'.$sql.'");$s = $get_db->fetch_next();$pages=pages($s[\'count\'], $page, $pagesize, $urlrule);';
+							$str .= '$r = $get_db->sql_query("'.$sql.'");$s = $get_db->fetch_next();$front_pages = front_pages($s[\'count\'], $page, $pagesize, $urlrule);';
+							
 						}
 						
 						
