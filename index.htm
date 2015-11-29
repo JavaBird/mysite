@@ -57,7 +57,7 @@
                           <li><a href="#">前沿资讯</a></li>
                           <li >
                             <a href="www.baidu.com" id="aa" >前端设计<span class="caret" ></span></a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-caret">
                               <li><a href="#">HTML</a></li>
                               <li><a href="#">CSS</a></li>
                               <li><a href="#">Javascript</a></li>
@@ -67,7 +67,7 @@
                           </li>
                           <li>
                             <a href="www.baidu.com"  >服务器端开发<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-caret">
                               <li><a href="#">Java</a></li>
                               <li><a href="#">Php</a></li>
                               <li><a href="#">ASP.NET</a></li>
@@ -77,7 +77,7 @@
                           </li>
                            <li>
                             <a href="www.baidu.com"   >数据库开发<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-caret">
                               <li><a href="#">MySql</a></li>
                               <li><a href="#">Oracle</a></li>
                               <li><a href="#">SQLServer</a></li>
@@ -143,9 +143,9 @@
                             如果你经常使用jQuery，那么你也许很熟悉事件绑定。这是很基本的东西，但是深入一点，你就能够找到机会让你事件驱动的代码变得不太零碎，并且更容易管理。 更好的选择器策略 让我们从基础的例子开始。下面的HTML代码表示的是可以开合的导航菜单。...
                           </p>
                           <p >
-                            <mark class="biq">标签：</mark>
-                            <span class="label label-success">前端</span>
-                            <span class="label label-info">javascript</span>
+                            <span class="label label-info arrowed-right">标签：</span>
+                            <a href="">前端</a>
+                            <a href="">javascript</a>
                             </p>
                       </div>
                   </div>
@@ -295,18 +295,10 @@
 
         $(function(){
 
-         /* $(ul[class="nav navbar-nav navbar-right"] > li > a).on('hover', function(event) {
-            event.preventDefault();
-            
-            $(this).
+        $("#menu > li").bind('mouseenter mouseleave', function() {
+            $(this).toggleClass('open');
           });
-*/      
-          $( "#menu" ).menu(
 
-            { position: { my: "left top", at: "right-100 top+40" } }
-
-          );
-          
 
 
 

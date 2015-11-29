@@ -106,13 +106,13 @@ mark[class="biq"]{
 	color: #2980b9;
 }
 .nav > li > a:focus, .nav > li > a:hover {
-    background-color: transparent !important;
+   /*  background-color: transparent !important; */
     color: #2980b9;
     text-decoration: none;
 }
 
 .nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
-    background-color: transparent !important;
+   /*  background-color: transparent !important; */
     color: #2980b9;
     text-decoration: none;
 }
@@ -288,4 +288,93 @@ div[class="text-center"]{
 		color: #ff6553 !important;
 	}
 }
+
+.navbar-right .dropdown-menu {
+    left: 0px !important;
+    right: 0px !important;
+}
+
+#menu{
+
+   	li{
+
+
+   		ul{
+
+   			padding-left: 0px;
+   			list-style: none;
+
+   		}
+   		.dropdown-menu{
+
+   			z-index: 1033;
+   			border-radius: 0 !important;
+    		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+   			li a{
+   				font-size: 13px;
+   				color: #999;
+   			}
+   			>li>a:focus,>li>a:hover{
+
+   				background: #d15b47 none repeat scroll 0 0;
+    			color: #ffffff;
+   			}
+
+
+   		}
+
+   		@media (min-width: 768px) {
+   			.dropdown-caret::before {
+			    -moz-border-bottom-colors: rgba(0, 0, 0, 0.2);
+			    border-bottom: 7px solid rgba(0, 0, 0, 0.2);
+			    border-left: 7px solid transparent;
+			    border-right: 7px solid transparent;
+			    content: "";
+			    display: inline-block;
+			    left: 9px;
+			    position: absolute;
+				    top: -7px;
+				}
+				.dropdown-caret::after {
+				    -moz-border-bottom-colors: #fff;
+				    border-bottom: 6px solid #fff;
+				    border-left: 6px solid transparent;
+				    border-right: 6px solid transparent;
+				    content: "";
+				    display: inline-block;
+				    left: 10px;
+				    position: absolute;
+				    top: -6px;
+				}
+
+				}
+   	}
+
+
+}
+
+
+   		
+		
+
+
+	.arrowed-right{
+		margin-right: 6px;
+		 position: relative;
+	    z-index: 1;
+	}
+
+
+	.arrowed-right::after {
+	   border-width: 10px 8px;
+	    right: -12px;
+	    -moz-border-left-colors: #5bc0de;
+	    border-style: solid;
+	    content: "";
+	    position: absolute;
+	    top: 0;
+	     margin-right: 6px;
+	}
+
+
 
