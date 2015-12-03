@@ -295,12 +295,18 @@
 
         $(function(){
 
-        $("#menu > li").bind('mouseenter mouseleave', function() {
-            $(this).toggleClass('open');
+        $("#menu > li").bind('mouseenter', function() {
+
+            $(this).addClass('open');
+          
           });
 
 
+         $("#menu > li").bind('mouseleave', function() {
 
+            $(this).removeClass('open')
+           
+          });
 
         });
 
