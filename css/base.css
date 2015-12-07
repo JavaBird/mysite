@@ -234,4 +234,48 @@ div[class="text-center"] {
   top: 0;
   margin-right: 6px; }
 
+.tab-mod.on {
+  display: block; }
+
+.tab-mod {
+  padding: 0;
+  clear: both;
+  overflow: hidden; }
+
+.rank-mod {
+  border-right: 0 none;
+  float: none;
+  height: auto;
+  padding: 0;
+  width: auto; }
+  .rank-mod li a {
+    font-size: 14px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap; }
+  .rank-mod li {
+    line-height: 20px; }
+  .rank-mod li.emp span {
+    background: #e54724 none repeat scroll 0 0;
+    color: #fff; }
+  .rank-mod ul {
+    margin-right: 0px !important; }
+
+.rank-mod li a, .rank-mod li span {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: middle; }
+
+.rank-mod li span {
+  font-size: 10px;
+  height: 14px;
+  line-height: 14px;
+  margin: 0 6px 0 0;
+  text-align: center;
+  width: 14px; }
+
+.rank-mod li span {
+  background: #41444b none repeat scroll 0 0;
+  color: #fff; }
+
 /*# sourceMappingURL=base.css.map */
