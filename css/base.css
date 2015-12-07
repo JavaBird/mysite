@@ -279,3 +279,13 @@ div[class="text-center"] {
   color: #fff; }
 
 /*# sourceMappingURL=base.css.map */
+
+.bdshare-button-style1-16 .bds_more {
+    
+    float: right !important;
+}
+.bdshare-button-style1-16 a, .bdshare-button-style1-16 .bds_more{
+
+  float: right !important;
+
+}
