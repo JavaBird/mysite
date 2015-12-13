@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>首页</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.css">
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+  <!-- 工具条 -->
+   <div class="toptool hidden-xs">
+      <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+              <a href="">码农之家 www.manzj.net</a>
+            </div>
+            <div class="col-sm-9">
+              
+            </div>
+        </div>
+      </div>
+    </div> 
+    <!-- 导航 -->
+    <div class="topNav navbar" role="navigation">
+        <div class="container">
+                      <!-- Brand and toggle get grouped for better mobile display -->
+                      <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                          <span class="sr-only">Toggle navigation</span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                          <span class="icon-bar"></span>
+                        </button>
+                    <!--    <a class="navbar-brand visible-xs-block" href="www.manzj.net">码农之家</a>  -->
+                        <a class="navbar-brand nav-log" href="www.manzj.net">
+                          <img src="image/logo.png" height="43" width="115" alt="码农之家" >
+                        </a> 
+                      </div>
+                      <!-- Collect the nav links, forms, and other content for toggling -->
+                      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul id="menu" class="nav navbar-nav navbar-right">
+                          <li class="active open"><a href="#">首页</a></li>
+                          <li><a href="#">前沿资讯</a></li>
+                          <li >
+                            <a href="www.baidu.com" id="aa" >前端设计<span class="caret" ></span></a>
+                            <ul class="dropdown-menu dropdown-caret">
+                              <li><a href="#">HTML</a></li>
+                              <li><a href="#">CSS</a></li>
+                              <li><a href="#">Javascript</a></li>
+                              <li role="separator" class="divider"></li>
+                              <li><a href="#">Separated link</a></li>
+                            </ul>
+                          </li>
+                          <li>
+                            <a href="www.baidu.com"  >服务器端开发<span class="caret"></span></a>
+                            <ul class="dropdown-menu dropdown-caret">
+                              <li><a href="#">Java</a></li>
+                              <li><a href="#">Php</a></li>
+                              <li><a href="#">ASP.NET</a></li>
+                              <li role="separator" class="divider"></li>
+                              <li><a href="#">Separated link</a></li>
+                            </ul>
+                          </li>
+                           <li>
+                            <a href="www.baidu.com"   >数据库开发<span class="caret"></span></a>
+                            <ul class="dropdown-menu dropdown-caret">
+                              <li><a href="#">MySql</a></li>
+                              <li><a href="#">Oracle</a></li>
+                              <li><a href="#">SQLServer</a></li>
+                              <li role="separator" class="divider"></li>
+                              <li><a href="#">Separated link</a></li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div><!-- /.navbar-collapse -->
+        </div>
+    </div>
+
+    <div class="context">
+
+       <div class="container ">
+          
+          <div class="row">
+            <div class="col-sm-9">
+
+              <div class="panel panel-default ph boxshow" >
+                  <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div id="carousel-example-generic"  class="carousel slide" data-ride="carousel">
+                               
+
+                                <!-- Wrapper for slides -->
+                                <div class="carousel-inner" role="listbox">
+                                  <div class="item active">
+                                    <img src="image/1.jpg" height="226" width="344" alt="...">
+                                    <div class="carousel-caption">
+                                      <a href="###">测试1</a>
+                                    </div>
+                                  </div>
+                                  <div class="item">
+                                    <img src="image/2.jpg" height="226" width="344" alt="...">
+                                    <div class="carousel-caption">
+                                      <a href="###">测试2</a>
+                                    </div>
+                                  </div>
+                                  <div class="item">
+                                    <img src="image/3.jpg" height="226" width="344" alt="...">
+                                    <div class="carousel-caption">
+                                      <a href="###">测试3</a>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <!-- Controls -->
+                                <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                                  <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                  <span class="sr-only">上一个</span>
+                                </a>
+                                <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                                  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                  <span class="sr-only">下一个</span>
+                                </a>
+                              </div>
+                              <p></p>
+                              <div class="row hidden-xs">
+                                  <div class="col-sm-3" >
+                                     <a href="#" class="thumbnail">
+                                      <img src="image/w3c.jpg" height="150" width="220" >
+                                    </a>
+                                  </div>
+                                  <div class="col-sm-9 rbt" >
+                                    <p ><a href="">跑步app如何依靠活动获</a></p>
+                                    <div class="note"><i class="fa fa-tags fa-fw"></i>
+                                    <span><a href="###">网络音乐版权</a></span>
+                                    <span><a href="###">网络音乐商</a></span>
+                                    <span><a href="###">网络音乐版权</a></span></div>
+                                  </div>
+                              </div>
+                              <p></p>
+                              <div class="row hidden-xs">
+                                  <div class="col-sm-3">
+                                     <a href="#" class="thumbnail">
+                                      <img src="image/w3c.jpg" height="150" width="220" >
+                                    </a>
+                                  </div>
+                                  <div class="col-sm-9 rbt">
+                                    <p ><a href="">跑步app如何依靠活动获</a></p>
+                                    <div class="note"><i class="fa fa-tags fa-fw"></i>
+                                    <span><a href="###">网络音乐版权</a></span>
+                                    <span><a href="###">网络音乐商</a></span>
+                                    <span><a href="###">网络音乐版权</a></span></div>
+                                  </div>
+                              </div>
+                              <p></p>
+                              <div class="row hidden-xs">
+                                  <div class="col-sm-3">
+                                     <a href="#" class="thumbnail">
+                                      <img src="image/w3c.jpg" height="150" width="220" >
+                                    </a>
+                                  </div>
+                                  <div class="col-sm-9 rbt">
+                                   <p ><a href="">跑步app如何依靠活动获</a></p>
+                                    <div class="note"><i class="fa fa-tags fa-fw"></i>
+                                    <span><a href="###">网络音乐版权</a></span>
+                                    <span><a href="###">网络音乐商</a></span>
+                                    <span><a href="###">网络音乐版权</a></span></div>
+
+                                  </div>
+                              </div>
+                             
+                            
+                        </div>
+                        <div class="col-sm-6">
+                           <h4 class="text-center"><a class="tit" href="###" target="_blank">致创业者：APP已死 服务永生</a></h4>
+                           <p>
+                            12月11日晚，传闻已久的阿里巴巴收购香港南华早报的消息终于坐实，阿里巴巴宣布收购香港最大的英最大的英最大的英最大的英......
+                            <a href="http://www.chinaz.com/news/2015/1212/482437.shtml" target="_blank">[详细]</a>
+                            </p>
+                            <h4 class="top10"><span>每日必读</span></h4>
+                            <ul class="todynewslist mt10 ">
+                            <li>
+                                    <a style="color:" href="http://www.chinaz.com/manage/2015/1212/482452.shtml" target="_blank">运营干货：跑步app如何依靠活动获取1000万用户？</a>
+                                    
+                                </li><li>
+                                    <a style="color:" href="http://www.chinaz.com/news/2015/1211/481995.shtml" target="_blank">大绝招！微信终于憋不住要在人工智能上大展拳脚！</a>
+                                </li><li>
+                                    <a style="color:" href="http://www.chinaz.com/news/2015/1211/481991.shtml" target="_blank">连连看！周鸿祎、雷军、小米空气净化器的那些事</a>
+                                </li><li>
+
+                              
+                                  
+                                <a style="color:" href="http://www.chinaz.com/news/2015/1211/482302.shtml" target="_blank">聊聊移动时代的网络社区</a>
+                                 <i class="gray-8">|</i>   
+                                <a style="color:" href="http://www.chinaz.com/web/2014/0606/354414.shtml" target="_blank">知乎如何从0做到400万</a>
+                                </li><li>
+                                    <a style="color:" href="http://www.chinaz.com/manage/2015/1211/482208.shtml" target="_blank">腾讯产品总监曾星：如何打造日活近亿爆款产品？</a>
+                                </li><li>
+                                    <a style="color:" href="http://www.chinaz.com/web/2015/1211/481925.shtml" target="_blank">干货分享：Dedecms网站如何移动化？五步搞定！</a>
+                                </li>
+                                <li>
+                                    <a style="color:" href="http://www.chinaz.com/web/2015/1211/481925.shtml" target="_blank">干货分享：Dedecms网站如何移动化？五步搞定！</a>
+                                </li>
+                                <li>
+                                    <a style="color:" href="http://www.chinaz.com/web/2015/1211/481925.shtml" target="_blank">干货分享：Dedecms网站如何移动化？五步搞定！</a>
+                                </li>
+                                <li>
+                                    <a style="color:" href="http://www.chinaz.com/web/2015/1211/481925.shtml" target="_blank">干货分享：Dedecms网站如何移动化？五步搞定！</a>
+                                </li>
+                                <li>
+                                    <a style="color:" href="http://www.chinaz.com/web/2015/1211/481925.shtml" target="_blank">干货分享：Dedecms网站如何移动化？五步搞定！</a>
+                                </li>
+                                 <li>
+                                    <a style="color:" href="http://www.chinaz.com/web/2015/1211/481925.shtml" target="_blank">干货分享：Dedecms网站如何移动化？五步搞定！</a>
+                                </li>
+                                </ul>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- top10结束 -->
+                <!-- 分类开始 -->
+                <p></p>
+                <div class="panel panel-default  boxshow">
+                    <div class="panel-body">
+                    <h4 class="lmtitle"><span class="bt">前端设计</span><span class="pull-right gd"><a href="">更多 <i class="fa fa-angle-double-right"></i>
+</a></span></h4>
+                    <div class="row">
+                      <div class="col-sm-5">
+                        <img src="image/5.JPG" class="img-responsive img-thumbnail" alt="Responsive image">
+                        <p></p>
+                        <p class="text-center h4o"><a href="">Web开发者不可不知的15条编码原则</a></p>
+                        <p></p>
+                        <p class="text-center note">
+                            <span>日期：2015-11-11</span>
+                            <span>点击量：22</span>
+                            <span>评论：2</span>
+                          </p>
+                        <p >HTML已经走过了近20的发展历程。它几乎见证了整个互联网的发展。但是，即便到现在，有很多基础的概念和原则依然需要开发者高度注意。<a href="###">[详细]</a></p>
+
+                      </div>
+                      <div class="col-sm-7 lbor">
+                         <div class="row amb">
+                            <div class="col-sm-4">
+                                <img src="image/5.JPG" class="img-responsive img-thumbnail" alt="Responsive image">
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="h4o"><a href="">别因壮大而毁了开发团队别因壮</a></p>
+                                <ul class="list-inline qm">
+                                  <li>日期：2015-12-11</li>
+                                  <li><i class="fa fa-comments-o fa-fw"></i>评论：0</li>
+                                </ul>
+                                <p class="tagi"><i class="fa fa-tags fa-fw"></i> <span><a href="###">高度注意</a></span> <span><a href="###">高度注意</a></span></p>
+                            </div>
+                         </div>
+
+                         <div class="row amb">
+                            <div class="col-sm-4">
+                                <img src="image/5.JPG" class="img-responsive img-thumbnail" alt="Responsive image">
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="h4o"><a href="">别因壮大而毁了开发团队别因壮</a></p>
+                                <ul class="list-inline qm">
+                                  <li>日期：2015-12-11</li>
+                                  <li><i class="fa fa-comments-o fa-fw"></i>评论：0</li>
+                                </ul>
+                                <p class="tagi"><i class="fa fa-tags fa-fw"></i> <span><a href="###">高度注意</a></span> <span><a href="###">高度注意</a></span></p>
+                            </div>
+                         </div>
+                          <div class="row amb">
+                            <div class="col-sm-4">
+                                <img src="image/5.JPG" class="img-responsive img-thumbnail" alt="Responsive image">
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="h4o"><a href="">别因壮大而毁了开发团队别因壮</a></p>
+                                <ul class="list-inline qm">
+                                  <li>日期：2015-12-11</li>
+                                  <li><i class="fa fa-comments-o fa-fw"></i>评论：0</li>
+                                </ul>
+                                <p class="tagi"><i class="fa fa-tags fa-fw"></i> <span><a href="###">高度注意</a></span> <span><a href="###">高度注意</a></span></p>
+                            </div>
+                         </div>
+                          <div class="row amb">
+                            <div class="col-sm-4">
+                                <img src="image/5.JPG" class="img-responsive img-thumbnail" alt="Responsive image">
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="h4o"><a href="">别因壮大而毁了开发团队别因壮</a></p>
+                                <ul class="list-inline qm">
+                                  <li>日期：2015-12-11</li>
+                                  <li><i class="fa fa-comments-o fa-fw"></i>评论：0</li>
+                                </ul>
+                                <p class="tagi"><i class="fa fa-tags fa-fw"></i> <span><a href="###">高度注意</a></span> <span><a href="###">高度注意</a></span></p>
+                            </div>
+                         </div>
+                      </div>
+                    </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+             
+          
+            </div>
+            <div class="col-sm-3">
+
+                <div class="row conr" >
+                  <div class="col-sm-12">
+                       <div class="panel panel-default">
+                        <div class="panel-body">
+                          <div class="thumbnail">
+                             <img src="image/wexi.jpg" height="258" width="258" alt="码农之家">
+                            <div class="caption">
+                              <h3>微信关注我们</h3>
+                              <p class="note">专业分享最新IT技术、文章的码农乐园。</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12" >
+                      <!-- Nav tabs -->
+                      <ul id="o_nav"  class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">头条排行</a></li>
+                       
+                       
+                      </ul>
+
+                      <!-- Tab panes -->
+                      <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                          <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div  class="tab-mod   on">
+                                    <div class="rank-mod">
+                                       <ul>
+                                          <li class="first emp"><span>1</span><a title="最好的告别:关于衰老与死亡，你必须知道的常识" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B012A1BHOO/ref=zg_bs_books_1/476-3443690-0352252&amp;tag=Mozilla" _hover-ignore="1">最好的告别:关于衰老与死亡</a>
+                                          </li>
+                                          <li class=" emp" _hover-ignore="1"><span>2</span><a title="岛上书店" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00VWVAFAG/ref=zg_bs_books_2/476-3443690-0352252&amp;tag=Mozilla" _hover-ignore="1">岛上书店</a>
+                                          </li>
+                                          <li class=" emp" _hover-ignore="1"><span>3</span><a title="消失的地平线" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00Z5S4EDG/ref=zg_bs_books_3/476-3443690-0352252&amp;tag=Mozilla" _hover-ignore="1">消失的地平线</a>
+                                          </li>
+                                          <li><span>4</span><a title="不要让未来的你,讨厌现在的自己" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00LLVTAKS/ref=zg_bs_books_4/476-3443690-0352252&amp;tag=Mozilla" _hover-ignore="1">不要让未来的你,讨厌现在的自己</a></li><li><span>5</span><a title="小王子(随书赠送4张萌系•明信片)" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B015E8O81Y/ref=zg_bs_books_5/476-3443690-0352252&amp;tag=Mozilla" _hover-ignore="1">小王子(随书赠送4张萌系•明信片)</a></li><li><span>6</span><a title="解忧杂货店" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00JZ96ZI8/ref=zg_bs_books_6/476-3443690-0352252&amp;tag=Mozilla" _hover-ignore="1">解忧杂货店</a></li><li><span>7</span><a title="绝望锻炼了我:朴槿惠自传" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00CGVBIBG/ref=zg_bs_books_7/476-3443690-0352252&amp;tag=Mozilla">绝望锻炼了我:朴槿惠自传</a></li><li _hover-ignore="1"><span>8</span><a title="这么慢,那么美" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B0116GWQ58/ref=zg_bs_books_8/476-3443690-0352252&amp;tag=Mozilla">这么慢,那么美</a></li><li><span>9</span><a title="乌合之众:群体心理研究" href="http://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00XJHJMM8/ref=zg_bs_books_9/476-3443690-0352252&amp;tag=Mozilla">乌合之众:群体心理研究</a></li></ul></div></div>
+                            </div>
+                          </div>
+                        </div>
+                       
+                      </div>
+
+                  </div>
+                </div>
+
+             
+
+            </div>
+
+          </div>
+
+        </div> 
+   </div>
+   <div class="foot">
+     <div class="container">
+       <div class="row">
+          <div class="col-sm-12">
+             <div class="bj">
+               <ul class="list-inline">
+                  <li><a href="">关于我们</a></li>
+                  <li><a href="">联系我们</a></li>
+                  <li><a href="">广告合作</a></li>
+                  <li><a href="">免职声明</a></li>
+                </ul>
+             </div>
+             <p class="note text-center">Copyright ©2011 www.manzj.net 码农之家版权所有.</p>
+             <p class="note text-center">晋ICP备××××号-1.</p>
+          </div>
+         
+       </div>
+     </div>
+
+   </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script type="text/javascript">
+
+        $(function(){
+
+        $("#menu > li").bind('mouseenter', function() {
+
+            $(this).addClass('open');
+          
+          });
+
+
+         $("#menu > li").bind('mouseleave', function() {
+
+            $(this).removeClass('open')
+           
+          });
+
+        });
+
+
+
+
+
+
+
+
+    </script>
+  </body>
+</html>
