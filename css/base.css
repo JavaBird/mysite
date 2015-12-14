@@ -342,7 +342,7 @@ div[class="text-center"] {
 
 @media (min-width: 992px) {
   .ph {
-    height: 465px; } }
+    height: 475px; } }
 @media (max-width: 768px) {
   .ph {
     height: 685px; } }
@@ -392,6 +392,20 @@ div[class="text-center"] {
     font-size: 14px;
     color: #999; }
 
+.rmtitle {
+  margin-top: 0px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #e74c3c; }
+  .rmtitle span {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px; }
+  .rmtitle .bt {
+    color: #fff;
+    display: inline-block;
+    background-color: #e74c3c; }
+
 .rbor {
   border-right: 1px solid #3BAFDA; }
 
@@ -412,6 +426,9 @@ div[class="text-center"] {
   margin-bottom: 5px; }
 
 .amb {
+  margin-bottom: 5px; }
+
+.qmb {
   margin-bottom: 5px; }
 
 /*# sourceMappingURL=base.css.map */
