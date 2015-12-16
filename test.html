@@ -120,298 +120,131 @@
                 <div class="showContext">
                   <!-- start -->
                   <blockquote>
-<p>   　　Web service是一个平台独立的，低耦合的，自包含的、基于可编程的web的应用程序，可使用开放的XML（标准通用标记语言下的一个子集）标准来描述、发布、发现、协调和配置这些应用程序，用于开发分布式的互操作的应用程序。本教程将展示一个spring框架来集成cxf的webservice的完整实例。</p></blockquote>
+<p>   　　与传统企业应用系统相比，大型互联网应用系统有以下特点:高并发，大流量、高可用、海量数据、用户分布广泛、网络情况复杂、安全环境恶劣、需求快速变更、发布频繁
+、渐进式发展。</p></blockquote>
     
 
+<h2>
+  　大型互联网架构演进</h2>
+<p>　　一般我们只是一个产品的情况下的架构演进历程，如果需要对外提供webService，通常使用REST服务实现。</p>
+<p>
+  　　以下一段内容来源于<a href="http://www.zhihu.com/question/22764869/answer/31277656" rel="nofollow" target="_blank">知乎</a></p>
 <h3>
-  　1、准备相关Jar包</h3>
-<pre class="brush: js;">
-activation.jar
-commons-logging-1.1.1.jar
-cxf-2.5.6.jar
-jaxb-api-2.2.1.jar
-jaxb-impl-2.1.3.jar
-jaxws-api-2.2.8.jar
-neethi-3.0.2.jar
-ow2-jws-2.0-spec-1.0.11.jar
-spring-aop-3.0.5.RELEASE.jar
-spring-asm-3.0.5.RELEASE.jar
-spring-beans-3.0.5.RELEASE.jar
-spring-context-3.0.5.RELEASE.jar
-spring-context-support-3.0.5.RELEASE.jar
-spring-core-3.0.5.RELEASE.jar
-spring-expression-3.0.5.RELEASE.jar
-spring-oxm-3.0.5.RELEASE.jar
-spring-web-3.0.5.RELEASE.jar
-spring-ws-core-2.0.2.RELEASE.jar
-spring-ws-security-2.0.2.RELEASE.jar
-spring-xml-1.5.9.jar
-stax-api-1.0.jar
-stax2-api-3.1.1.jar
-webservices-api-2.2.0-1.jar
-webservices-extra-2.1-20.jar
-woodstox-core-asl-4.1.2.jar
-ws-test.jar
-wsdl4j-1.6.2.jar
-wss4j-1.6.7.jar
-xmlschema-core-2.0.3.jar
-</pre>
-
+  　1. 分布式架构的演进系统架构演化历程-初始阶段架构</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913091107.PNG"></p>
+<p>
+  　　初始阶段 的小型系统 应用程序、数据库、文件等所有的资源都在一台服务器上通俗称为LAMP</p>
+<p>
+  　　<strong>特征：应用程序、数据库、文件等所有的资源都在一台服务器上。</strong></p>
+<p>
+  <strong>　　描述：通常服务器操作系统使用linux，应用程序使用PHP开发，然后部署在Apache上，数据库使用Mysql，汇集各种免费开源软件以及一台廉价服务器就可以开始系统的发展之路了。</strong></p>
 <h3>
-  　2、 编写webService服务端</h3>
+  　2. 系统架构演化历程-应用服务和数据服务分离</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913864679.PNG"></p>
 <p>
-  　　<strong>2.1 新建一个空的WEB工程，我这里命名为ws_test，将其放置于TOMCAT的webapps目录。</strong></p>
+  　　好景不长，发现随着系统访问量的再度增加，webserver机器的压力在高峰期会上升到比较高，这个时候开始考虑增加一台webserver</p>
 <p>
-  　　<strong>2.2 然后在ws_test下面建立WEB-INF文件夹，并在WEB-INF文件夹中建立目录lib。</strong></p>
-  <p>
-  　　<strong>2.3 将上面提到的JAR包都拷贝到lib目录中。</strong></p>
-  <p>
-  　　<strong>2.4 在WEB-INF目录中新建web.xml文件，并将如下内容放于其中：</strong></p>
-<pre class="brush: xml;">
-    <?xml version="1.0" encoding="ISO-8859-1"?>
-    <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-       version="2.5"> 
-        <description>
-          Web Service Test.
-        </description>    
-        <display-name>Web Service Test</display-name>    
-        <listener>
-            <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-        </listener>
-        <context-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:applicationContext-server.xml</param-value>
-        </context-param>    
-        <listener>
-            <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-        </listener>   
-        <servlet>
-            <servlet-name>CXFService</servlet-name>
-            <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-        </servlet>    
-        <servlet-mapping>
-            <servlet-name>CXFService</servlet-name>
-            <url-pattern>/*</url-pattern>
-        </servlet-mapping>
-    </web-app>
-</pre>
+  　　<strong>特征：应用程序、数据库、文件分别部署在独立的资源上。</strong></p>
 <p>
-  　　这个配置文件是WEB应用的核心配置文件，如Listener的配置，servlet请求的映射等，这里并配置了启动的时候加载SPRING，并初使化我们的WEBSERVICE服务端配置文件。 </p>
-  <p>
-  　　<strong>2.5 在ECLIPSE中新建JAVA工程，并在工程中新建lib目录，将上面提到的JAR包全部放到lib目录，并将他们全部加入到classpath中。</strong> 
-</p>
+  <strong>　　描述：数据量增加，单台服务器性能及存储空间不足，需要将应用和数据分离，并发处理能力和数据存储空间得到了很大改善。</strong></p>
+<h3>
+  　3. 系统架构演化历程-使用缓存改善性能</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913855076.PNG"></p>
 <p>
-  　　<strong>2.6 增加服务端的JAVA类：</strong></p>
-<pre class="brush:java;">
-  package com.use.test.ws.entity;
-public class User {
-  int id ;
-  String name = null;
-  String address = null;  
-  String email = null;
-  public int getId() {
-    return id;
-  }
-  public void setId(int id) {
-    this.id = id;
-  }
-  public String getName() {
-    return name;
-  }
-  public void setName(String name) {
-    this.name = name;
-  } 
-  public String getAddress() {
-    return address;
-  }
-  public void setAddress(String address) {
-    this.address = address;
-  } 
-  public String getEmail() {
-    return email;
-  }
-  public void setEmail(String email) {
-    this.email = email;
-  }   
-}
-
-
-</pre>
-<pre class="brush:java;">
-package com.use.test.ws.server;
- 
-import javax.jws.WebParam;
- 
-import javax.jws.WebService;
- 
-import javax.jws.soap.SOAPBinding;
- 
-import javax.jws.soap.SOAPBinding.Style;
- 
-import com.use.test.ws.entity.User;
- 
-/**
- * <b>function:</b>定制客户端请求WebService所需要的接口
- */
- 
-@WebService
- 
-@SOAPBinding(style = Style.RPC)
- 
-public interface IService {
-    public User getUserByName(@WebParam(name = "name") String name);
-    public void setUser(User user);
-}
-
-
-</pre>
-<pre class="brush:java;">
-  package com.use.test.ws.server;
- 
-import java.util.Date;
-import javax.jws.WebParam;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.jws.soap.SOAPBinding.Style;
-import com.use.test.ws.entity.User;
- 
-/**
- * <b>function:</b> WebService传递复杂对象，如JavaBean、Array、List、Map等
- */
-@WebService
-@SOAPBinding(style = Style.RPC)
-@SuppressWarnings("deprecation")
-public class TestService implements IService {
-    public User getUserByName(@WebParam(name = "name") String name) {
-        User user = new User();
-        user.setId(new Date().getSeconds());
-        user.setName(name);
-        user.setAddress("china");
-        user.setEmail(name + "@test.com");
-        return user;
-    }
-    public void setUser(User user) {
-        System.out.println("############Server setUser###########");
-        System.out.println("setUser:" + user);
-    }
-}
-
-
-</pre>
+  　　<strong>特征：数据库中访问较集中的一小部分数据存储在缓存服务器中，减少数据库的访问次数，降低数据库的访问压力。</strong></p>
 <p>
-  　　<strong>2.7 在src目录下建立applicationContext-client.xml，并放入以下内容：</strong></p>
-<pre class="brush:xml;">
-  <span xmlns="http://www.w3.org/1999/xhtml" style=""><span xmlns="http://www.w3.org/1999/xhtml" style=""><?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:jaxws="http://cxf.apache.org/jaxws"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-3.0.xsd
-    http://cxf.apache.org/jaxws 
-    http://cxf.apache.org/schemas/jaxws.xsd">    
-    <import resource="classpath:META-INF/cxf/cxf.xml"/>
-  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
-  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/> 
-  <bean id="userServiceBean" class="com.use.test.ws.server.TestService"/>   
-  <bean id="inMessageInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>  
-  <bean id="outLoggingInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
-  <jaxws:server id="userService" serviceClass="com.use.test.ws.server.IService" address="/Users">
-      <jaxws:serviceBean>
-          <ref bean="userServiceBean"/>
-      </jaxws:serviceBean>
-      <jaxws:inInterceptors>
-          <ref bean="inMessageInterceptor"/>
-      </jaxws:inInterceptors>
-      <jaxws:outInterceptors>
-          <ref bean="outLoggingInterceptor"/>
-      </jaxws:outInterceptors>
-  </jaxws:server>
-</beans>
-</span></span><span style="color:#099000;"><span style="color:#000000;font-weight: bold;"><span style="color:#000000;font-weight: bold;"></span></span></span>
-</pre>
+  <strong>　　描述：系统访问特点遵循二八定律，即80%的业务访问集中在20%的数据上。缓存分为本地缓存和远程分布式缓存，本地缓存访问速度更快但缓存数据量有限，同时存在与应用程序争用内存的情况。</strong></p>
+<h3>
+  　4. 系统架构演化历程-使用应用服务器集群</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913531344.PNG"></p>
 <p>
-  　　<strong>2.8 将建立的JAVA工程导出jar包，只导出src下面的内容即，并将这个jar包放到上面的TOMCAT工程中的ws_test/WEB-INF/lib目录下，并启动TOMCAT服务器；</strong></p>
-  <p>
-  　　<strong>2.9 启动成功后，此时访问URL：http://localhost:8080/ws_test/Users?wsdl，应该会看到WSDL的输出。</strong></p>
-  <p>
-  　　<strong></strong></p>
-  <h3>
-  　3、 编写webService客户端</h3>
-  <p>
-  　　<strong>3.1 独立的客户端请求类</strong></p>
-<pre class="brush:java;">
-package com.use.test.ws.client;
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import com.use.test.ws.entity.User;
-import com.use.test.ws.server.IService;
-public class TestClient {
-    public static void main(String[] args) {
-        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-        factory.setServiceClass(IService.class);
-        factory.setAddress("http://localhost:8080/ws_test/Users");
-        IService service = (IService) factory.create();
-        System.out.println("#############Client getUserByName##############");
-        User user = service.getUserByName("hoojo");
-        System.out.println(user);
-        user.setAddress("China-Guangzhou");
-        service.setUser(user);
-    }
-}
-</pre>
+  　　在做完分库分表这些工作后，数据库上的压力已经降到比较低了，又开始过着每天看着访问量暴增的幸福生活了，突然有一天，发现系统的访问又开始有变慢的趋势了，这个时候首先查看数据库，压力一切正常，之后查看webserver，发现apache阻塞了很多的请求，而应用服务器对每个请求也是比较快的，看来 是请求数太高导致需要排队等待，响应速度变慢</p>
 <p>
-  　　<strong>3.2 与SPRING的集成，首先需要在src下面建立配置文件applicationContext-client.xml，将输入以下内容：</strong></p>
-<pre class="brush:xml;">
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:jaxws="http://cxf.apache.org/jaxws"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-3.0.xsd
-    http://cxf.apache.org/jaxws
-    http://cxf.apache.org/schemas/jaxws.xsd">
-    <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <jaxws:client id="userWsClient" serviceClass="com.use.test.ws.server.IService" address="http://localhost:8080/ws_test/Users"/>
-</beans>
-</pre>
+  　　<strong>特征：多台服务器通过负载均衡同时向外部提供服务，解决单台服务器处理能力和存储空间上限的问题。</strong></p>
 <p>
-  　　<strong>3.3 建立JAVA类</strong></p>
-  <pre class="brush:java;">
-    package com.use.test.ws.client;
- 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import com.use.test.ws.entity.User;
-import com.use.test.ws.server.IService;
- 
-/**
- * <b>function:</b>请求Spring整合CXF的WebService客户端
- */
- 
-public class SpringUsersWsClient {
-    public static void main(String[] args) {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext-client.xml");
-        IService service = ctx.getBean("userWsClient", IService.class);
-        System.out.println("#############Client getUserByName##############");
-        User user = service.getUserByName("hoojo");
-        System.out.println(user);
-        user.setAddress("China-Guangzhou");
-        service.setUser(user);
-    }
-}
-  </pre>
-  <p>
-  　　<strong>到此完整例子已经完成，效果请自行测试！</strong></p>
-
+  <strong>　　描述：使用集群是系统解决高并发、海量数据问题的常用手段。通过向集群中追加资源，提升系统的并发处理能力，使得服务器的负载压力不再成为整个系统的瓶颈。</strong></p>
+<h3>
+  　5. 系统架构演化历程-数据库读写分离</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913946903.PNG"></p>
+<p>
+  　　享受了一段时间的系统访问量高速增长的幸福后，发现系统又开始变慢了，这次又是什么状况呢，经过查找，发现数据库写入、更新的这些操作的部分数据库连接的资源竞争非常激烈，导致了系统变慢</p>
+<p>
+  　　<strong>特征：多台服务器通过负载均衡同时向外部提供服务，解决单台服务器处理能力和存储空间上限的问题。</strong></p>
+<p>
+  <strong>　　描述：使用集群是系统解决高并发、海量数据问题的常用手段。通过向集群中追加资源，使得服务器的负载压力不在成为整个系统的瓶颈。</strong></p>
+<h3>
+  　6. 系统架构演化历程-反向代理和CDN加速</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913168602.PNG"></p>
+<p>
+  　　<strong>特征：采用CDN和反向代理加快系统的 访问速度。</strong></p>
+<p>
+  <strong>　　描述：为了应付复杂的网络环境和不同地区用户的访问，通过CDN和反向代理加快用户访问的速度，同时减轻后端服务器的负载压力。CDN与反向代理的基本原理都是缓存。</strong></p>
+<h3>
+  　7. 系统架构演化历程-分布式文件系统和分布式数据库</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913933598.PNG"></p>
+<p>
+  　　随着系统的不断运行，数据量开始大幅度增长，这个时候发现分库后查询仍然会有些慢，于是按照分库的思想开始做分表的工作</p>
+<p>
+  　　<strong>特征：数据库采用分布式数据库，文件系统采用分布式文件系统。</strong></p>
+<p>
+  <strong>　　描述：任何强大的单一服务器都满足不了大型系统持续增长的业务需求，数据库读写分离随着业务的发展最终也将无法满足需求，需要使用分布式数据库及分布式文件系统来支撑。分布式数据库是系统数据库拆分的最后方法，只有在单表数据规模非常庞大的时候才使用，更常用的数据库拆分手段是业务分库，将不同的业务数据库部署在不同的物理服务器上。</strong></p>
+<h3>
+  　8. 系统架构演化历程-使用NoSQL和搜索引擎</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913994504.PNG"></p>
+<p>
+  　　<strong>特征：系统引入NoSQL数据库及搜索引擎。</strong></p>
+<p>
+  <strong>　　描述：随着业务越来越复杂，对数据存储和检索的需求也越来越复杂，系统需要采用一些非关系型数据库如NoSQL和分数据库查询技术如搜索引擎。应用服务器通过统一数据访问模块访问各种数据，减轻应用程序管理诸多数据源的麻烦。</strong></p>
+<h3>
+  　9. 系统架构演化历程-业务拆分</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913815621.PNG"></p>
+<p>
+  　　<strong>特征：系统上按照业务进行拆分改造，应用服务器按照业务区分进行分别部署。</strong></p>
+<p>
+  <strong>　　描述：为了应对日益复杂的业务场景，通常使用分而治之的手段将整个系统业务分成不同的产品线，应用之间通过超链接建立关系，也可以通过消息队列进行数据分发，当然更多的还是通过访问同一个数据存储系统来构成一个关联的完整系统。纵向拆分：将一个大应用拆分为多个小应用，如果新业务较为独立，那么就直接将其设计部署为一个独立的Web应用系统纵向拆分相对较为简单，通过梳理业务，将较少相关的业务剥离即可。横向拆分：将复用的业务拆分出来，独立部署为分布式服务，新增业务只需要调用这些分布式服务横向拆分需要识别可复用的业务，设计服务接口，规范服务依赖关系。</strong></p>
+<h3>
+  　10. 系统架构演化历程-分布式服务</h3>
+<p style="text-align: center">
+  <img alt="图片" src="/UploadFiles/Document/201512/13/20151213102913588761.PNG"></p>
+<p>
+  　　<strong>特征：公共的应用模块被提取出来，部署在分布式服务器上供应用服务器调用。</strong></p>
+<p>
+  <strong>　　描述：随着业务越拆越小，应用系统整体复杂程度呈指数级上升，由于所有应用要和所有数据库系统连接，最终导致数据库连接资源不足，拒绝服务。</strong></p>
+<p>
+  <strong>　　Q：分布式服务应用会面临哪些问题？</strong></p>
+<p>
+  　　(1) 当服务越来越多时，服务URL配置管理变得非常困难，F5硬件负载均衡器的单点压力也越来越大。<br>
+  　　(2) 当进一步发展，服务间依赖关系变得错踪复杂，甚至分不清哪个应用要在哪个应用之前启动，架构师都不能完整的描述应用的架构关系。<br>
+  　　(3) 接着，服务的调用量越来越大，服务的容量问题就暴露出来，这个服务需要多少机器支撑？什么时候该加机器？<br>
+  　　(4) 服务多了，沟通成本也开始上升，调某个服务失败该找谁？服务的参数都有什么约定？<br>
+  　　(5) 一个服务有多个业务消费者，如何确保服务质量？<br>
+  　　(6) 随着服务的不停升级，总有些意想不到的事发生，比如cache写错了导致内存溢出，故障不可避免，每次核心服务一挂，影响一大片，人心慌慌，如何控制故障的影响面？服务是否可以功能降级？或者资源劣化？<br>
+  　　这个好像是<a href="http://item.jd.com/11322972.html" rel="nofollow" target="_blank">大型网站技术架构 核心原理与案例分析</a>开篇的内容，不过作者总结得不错，我就转载一下吧。</p>
+<h2>
+  　产品线的架构</h2>
+<p>
+  　　还有一种就是上面也有提到的业务拆分。现在我们需要做一个产品线，我们只需要一个数据层，一个通用业务逻辑层，前面还有各种应用和界面层,不需要对外部系统(外部公司的系统)提供服务的情况以前我们一般会选择用EJB等来构建分布式应用，但是现在我们可以使用dobbo、thrift、avro、hessian这类RPC框架来构建分布式应用实现不同应用和数据来源的交互。这种结构模式下我们需要对其他公司提供服务，可以专门写一个应用对外部系统提供rest服务。一般大多数互联网服务背后都要访问十几个甚至几百个内部服务，它们之间的通信方式一般都是RPC：就像访问一个远程方法那样，输入参数后等待返回结果。这对于构建复杂系统是最容易理解的方式。</p>
+<p>
+  　　如下图的模型，文件系统，缓存那些没有画出来，大家理解就行。</p>
+<p style="text-align: center">
+  <img style="width: 660px;" alt="图片" src="/UploadFiles/Document/201512/13/20151213102913156154.PNG"></p>
+<h2>
+  　结语：</h2>
+<p>
+  　　不管哪种架构我们都需要做好模块化(尽量做到模块复用)。<br>
+  　　不要为了架构而架构导致过度设计。<br>
+  　　不管何种架构都是为了更好满足业务需求，架构应该跟随业务的发展而发展。<br>
+  　　当前的架构如果可以满足当前的业务发展，就可以考虑下一步的扩展了，不用一下子考虑3步4步甚至更多。<br>
+  　　以上如果有误，还望大家不吝赐教！</p>
 
                 
 
