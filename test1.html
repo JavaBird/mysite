@@ -119,126 +119,80 @@
                 </div>
                 <div class="showContext">
                   <!-- start -->
-                  <blockquote>
-<p>   　　Web service是一个平台独立的，低耦合的，自包含的、基于可编程的web的应用程序，可使用开放的XML（标准通用标记语言下的一个子集）标准来描述、发布、发现、协调和配置这些应用程序，用于开发分布式的互操作的应用程序。本教程将展示一个spring框架来集成cxf的webservice的完整实例。</p></blockquote>
-    
-
+                  
+    <p class="leader">
+  　　<a href="http://weibo.com/chenzimu7/" target="_blank">@陈子木</a> 网站的重新设计可能会为它的成长和发展带来新的契机。随着时间的推移，网站的访问者变了，而网站本身也有必要随之进化。它并不一定非得和过去一样，你可以随着网站设计的趋势重新构建它。</p>
+<p>
+  　　当你重新设计网站的时候，功能实现与用户体验是你需要考虑的首要因素。以下的十个重设案例中，包括了著名的社交网站Facebook，搜索巨头Google，视频巨擘Youtube，以及权威的影视评分网站IMDB。看看这些案例，再点击每张图片上方的链接访问原始网页，你可以对比以下它们的差异。琢磨一下为什么这些重设是成功的，你可能会从中受益匪浅。</p>
 <h3>
-  　1、准备相关Jar包</h3>
-<pre class="brush: js;">
-activation.jar
-commons-logging-1.1.1.jar
-cxf-2.5.6.jar
-jaxb-api-2.2.1.jar
-jaxb-impl-2.1.3.jar
-jaxws-api-2.2.8.jar
-neethi-3.0.2.jar
-ow2-jws-2.0-spec-1.0.11.jar
-spring-aop-3.0.5.RELEASE.jar
-spring-asm-3.0.5.RELEASE.jar
-spring-beans-3.0.5.RELEASE.jar
-spring-context-3.0.5.RELEASE.jar
-spring-context-support-3.0.5.RELEASE.jar
-spring-core-3.0.5.RELEASE.jar
-spring-expression-3.0.5.RELEASE.jar
-spring-oxm-3.0.5.RELEASE.jar
-spring-web-3.0.5.RELEASE.jar
-spring-ws-core-2.0.2.RELEASE.jar
-spring-ws-security-2.0.2.RELEASE.jar
-spring-xml-1.5.9.jar
-stax-api-1.0.jar
-stax2-api-3.1.1.jar
-webservices-api-2.2.0-1.jar
-webservices-extra-2.1-20.jar
-woodstox-core-asl-4.1.2.jar
-ws-test.jar
-wsdl4j-1.6.2.jar
-wss4j-1.6.7.jar
-xmlschema-core-2.0.3.jar
-</pre>
-
+  　Top 10:Amazon</h3>
+  <p>
+  　　这一设计稿出自设计师James Cipriano之手，并且发布在<a href="http://dribbble.com/shots/1388275-Amazon-Streaming-Redesign" target="_blank">Dribbble</a>上。James强化了Amazon的标识色黄色，并应用到侧边栏上。而主体部分的产品图则比目前的Amazon地设定更清晰规整。右上角的个人信息用圆形的头像替代了，而这正是目前最流行的表现形式。原始的Amazon网站<a href="http://www.amazon.com" target="_blank">戳这里</a>。</p>
+  <p>
+  　　<a href="http://dribbble.com/shots/1388275-Amazon-Streaming-Redesign" target="_blank">James Cipriano对Amazon的重新设计</a></p>
 <h3>
-  　2、 编写webService服务端</h3>
-<p>
-  　　<strong>2.1 新建一个空的WEB工程，我这里命名为ws_test，将其放置于TOMCAT的webapps目录。</strong></p>
-<p>
-  　　<strong>2.2 然后在ws_test下面建立WEB-INF文件夹，并在WEB-INF文件夹中建立目录lib。</strong></p>
+  　Top 9:IMDB</h3>
   <p>
-  　　<strong>2.3 将上面提到的JAR包都拷贝到lib目录中。</strong></p>
-  <p>
-  　　<strong>2.4 在WEB-INF目录中新建web.xml文件，并将如下内容放于其中：</strong></p>
-<pre class="brush: xml;">
-    <?xml version="1.0" encoding="ISO-8859-1"?>
-    <web-app xmlns="http://java.sun.com/xml/ns/javaee"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-       version="2.5"> 
-        <description>
-          Web Service Test.
-        </description>    
-        <display-name>Web Service Test</display-name>    
-        <listener>
-            <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-        </listener>
-        <context-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:applicationContext-server.xml</param-value>
-        </context-param>    
-        <listener>
-            <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-        </listener>   
-        <servlet>
-            <servlet-name>CXFService</servlet-name>
-            <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-        </servlet>    
-        <servlet-mapping>
-            <servlet-name>CXFService</servlet-name>
-            <url-pattern>/*</url-pattern>
-        </servlet-mapping>
-    </web-app>
-</pre>
+  　　设计师Vladimir Kudinov在自己的Behance页面中发布了这一设计作品。原始的IMDB首页设计来的更传统，而Vladimir的设计则采用了图片拼贴的方式来呈现，大小错落的照片围绕着纯色底的文字选框，充满了视觉冲击力。原始的IMDB网站<a href="www.imdb.com" target="_blank">戳这里</a>(需要翻墙)。</p>
 <p>
-  　　这个配置文件是WEB应用的核心配置文件，如Listener的配置，servlet请求的映射等，这里并配置了启动的时候加载SPRING，并初使化我们的WEBSERVICE服务端配置文件。 </p>
+  　　<a href="https://www.behance.net/gallery/IMDB-Filmpage-Concept/1678386" target="_blank">Vladimir Kudinov对IMDB的重新设计</a></p>
+<h3>
+  　Top 8:Google</h3>
+
+<p>
+  　　这一重设作品同样发布在Behance上面，作者是Ayman Shaltoni。Ayman的设计非常有特色，Google的Logo字体从衬线体替换成了更现代的非衬线体，原本清新的糖果色被更加复古的色调所替代。可能是受到了古老的Mac OS 8.5的启发，原本置于顶端的导航栏被移动到下方，并且可以像抽屉一样打开，这可能是这一重设最为亮眼的地方。原始的Google网站<a href="http://www.google.com.hk" target="_blank">戳这里</a>。</p>
   <p>
-  　　<strong>2.5 在ECLIPSE中新建JAVA工程，并在工程中新建lib目录，将上面提到的JAR包全部放到lib目录，并将他们全部加入到classpath中。</strong> 
+  　　<a href="https://www.behance.net/gallery/Google-Redesign-Concept-Freebie/7831963" target="_blank">Ayman Shaltoni对Google的重新设计</a></p>
+  
+<h3>
+  　Top 7:BBC</h3>
+  <p>
+  　　Micheal Coyle也认为图片是最抓人眼球的。他重新设计BBC的首页的时候同样选择了将图片作为呈现的主体，去除大量的文字堆砌，更加直观。左侧的侧边栏替代原本BBC网站上各个区块的标题，整合度更高。原始的BBC网站<a href="http://www.bbc.com" target="_blank">戳这里</a>。</p>
+  <p>
+  　　<a href="http://dribbble.com/shots/1017201-BBC-Website-Redesign" target="_blank"> Michael Coyle对BBC的重新设计</a></p>
+<h3>
+  　Top 6:Twitter</h3>
+<p>
+  　　Zsolt所设计的Twitter网站采用了独特的分栏设计。有研究表明正常人阅读的时候，一眼只能看到几个字，这也是为什么报纸的排版中每一栏的宽度都不大。而Zsolt的设计与此不谋而合。另外，Zsolt的twitter页面的信息维度也更加的扁平，页面可以向左滑动，看到更多的栏目，也可以向下滚动，阅读更多的回复。原始的twitter网页<a href="http://twitter.com" target="_blank">戳这里</a>（需要翻墙）。</p>
+  <p>
+  　　<a href="https://www.behance.net/gallery/Twitter-redesign-concept/6806367" target="_blank">Zsolt Hutvagner对Twitter的重新设计</a></p>
+<h3>
+  　Top 5:Wikipedia</h3>
+  <p>
+  　　维基百科也许是截至目前最好的百科全书。目前的维基百科页面极其素雅，文字远多于图片，因此，排版就显得尤为重要了。George基于现有页面和栏目重新设计了维基百科的首页。左侧以图片为日期索引，颇具匠心，而右侧则使用图文混排的形式，以相同尺寸的矩形区块来划分不同的栏目。值得一提的是，George在此也引入了时间线，拓展了信息呈现的维度。原始的维基百科的页面<a href="http://zh.wikipedia.org" target="_blank">戳这里</a>。</p>
+  <h3>
+  　Top 4:Soundcloud</h3>
+  <p>
+  　　Soundcloud号称是音频分享界的Youtube，无出其右者。Anton保留了Soundcloud原始的配色方案，增加了banner图，强化了主体部分的排版，为右侧的个人信息栏增加了浅灰色的底色，区分出了区块。比起原本的Soundcloud页面，Anton的设计显得更加清晰，又不失其简约风格的神韵。原始的Soundcloud页面<a href="http://www.soundcloud.com" target="_blank">戳这里</a>（需要翻墙）。</p>
+  <p>
+  　　<a href="http://dribbble.com/shots/1450328-SoundCloud-Site-Redesign-2" target="_blank">Anton Skugarov 对Soundcloud的重新设计</a></p>
+<h3>
+  　Top 3:Youtube</h3>
+  <p>
+  　　被封为视频领域传奇的Youtube就无需深入介绍了吧？同以上的几个案例一样，Alexandr对于Youtube的改造方向也选择了扁平化。这套重新设计的页面保留了Google的配色体系，左侧的个人信息栏使用了经典的红黑配色，在浅色的底色上显得非常显眼，也让整个版面不那么单调了。视频的排布方式也遵循一贯的排布方式，中间是主要的视频内容，右侧为相关推荐。原始的Youtube网页<a href="http://www.youtube.com" target="_blank">戳这里</a>（需要翻墙）。</p>
+  <p>
+  　　<a href="http://dribbble.com/shots/829473-YouTube-redesign" target="_blank"> Alexandr Brinza对Youtube的重新设计</a></p>
+<h3>
+  　Top 2:Netflix</h3>
+  <p>
+  　　不知道Netflix？那你应该知道连奥巴马都喜欢看的美剧《纸牌屋》吧？这就是Netflix出品的。作为美国最著名的在线影片租赁提供商，Netflix沿用着充满复古范儿的Logo，以及相对古板的页面排布方案。Vivek对Netflix的重新设计还是比较彻底的，重新设计的logo，扁平的页面。三栏式的页面设计，方便用户筛选他们喜欢的影片，而影片的图文混排比也比之前的版式更加清晰出众。原始的Netflix的页面<a href="http://www.netflix.com" target="_blank">戳这里</a>（大陆无法观影）。</p>
+  <p>
+  　　<a href="http://dribbble.com/shots/1169194-Netflix-Redesign" target="_blank"> Vivek Venkatraman对Netflix的重新设计</a></p>
+<h3>
+  　Top 1:Facebook</h3>
+  <p>
+  　　传奇的社交网站Facebook已经不是第一次被人重新设计了。但是这一次的设计方案还是令人印象非常深刻的。Fred采用了微软的Metro设计风格，蓝色与白色的色块来承载文字信息，与图片错落混排，效果极为养眼。深色的侧边栏与顶部的蓝色导航栏，也同样形成色彩对比，清晰明了。<a href="http://www.facebook.com" target="_blank">戳这里</a>访问Facebook，当然，你得翻墙才行。</p>
+  <p>
+  　　<a href="http://dribbble.com/shots/879822-Facebook-New-Look-Side-Panel" target="_blank"> Fred Nerby对Facebook的重新设计</a></p>
+  <p>
+  　　原文地址：<a href="http://www.themost10.com/concept-redesign-examples-of-websites/" target="_blank">themost10</a><br>
+
+  　　优设翻译：<a href="http://weibo.com/chenzimu7/" target="_blank">@陈子木</a><br>
 </p>
-<p>
-  　　<strong>2.6 增加服务端的JAVA类：</strong></p>
-<pre class="brush:java;">
-  package com.use.test.ws.entity;
-public class User {
-  int id ;
-  String name = null;
-  String address = null;  
-  String email = null;
-  public int getId() {
-    return id;
-  }
-  public void setId(int id) {
-    this.id = id;
-  }
-  public String getName() {
-    return name;
-  }
-  public void setName(String name) {
-    this.name = name;
-  } 
-  public String getAddress() {
-    return address;
-  }
-  public void setAddress(String address) {
-    this.address = address;
-  } 
-  public String getEmail() {
-    return email;
-  }
-  public void setEmail(String email) {
-    this.email = email;
-  }   
-}
 
 
-</pre>
+
+
 <pre class="brush:java;">
 package com.use.test.ws.server;
  
