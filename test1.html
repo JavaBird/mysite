@@ -119,511 +119,300 @@
                 </div>
                 <div class="showContext">
                   <!-- start -->
-                  <blockquote><strong>[前言]　</strong>在前端开发的过程中，经常需要通过javascritp脚本来刷新当前页面，本文将介绍几种方法，供码农们参考。</blockquote>
+                  <blockquote><strong>[前言]　</strong>本文旨在帮助广大码农分析、理解基于<code>jQuery</code>实现放大镜效果。相信大家在一些电商的网站（例如：凡客，京东商城，阿里巴巴等）上看到过这个效果，它一般应用于放大查看商品图片。</blockquote>
 
                   <div class="realcontext">
                   <!-- 正文 -->
-                    <p>如何实现刷新当前页面呢？借助js你将无所不能。</p>
-                   <p><strong>1，reload 方法，该方法强迫浏览器刷新当前页面。</strong></p>
-                   <p>语法：<code>location.reload([bForceGet])</code>  </p>
-                   <p>参数： <code>bForceGet</code> ， 可选参数， 默认为 <code>false</code> ，从客户端缓存里取当前页。<code>true</code> , 则以 <code>GET</code>  方式，从服务端取最新的页面, 相当于客户端点击 <kbd>F5</kbd>("刷新")</p>
-                   <p><strong>2，replace 方法，该方法通过指定URL替换当前缓存在历史里（客户端）的项目，因此当使用replace方法之后，你不能通过“前进”和“后退”来访问已经被替换的URL。</strong></p>
-                   <p>语法： <code>location.replace(URL)</code>   </p>
-                   <p>通常使用： <code>location.reload()</code> 或者是 <code>history.go(0)</code> 来做。</p>
-                   <p>此方法类似客户端点<kbd>F5</kbd>刷新页面，所以页面<code>method="post"</code>时，会出现"网页过期"的提示。
-因为<code>Session</code>的安全保护机制。</p>
-<p>当调用 <code>location.reload()</code>  方法时， aspx页面此时在服务端内存里已经存在， 因此必定是 IsPostback 的。
-如果有这种应用： 需要重新加载该页面，也就是说期望页面能够在服务端重新被创建，期望是 Not IsPostback 的。</p>
-<p>这里，<code>location.replace()</code>  就可以完成此任务。被replace的页面每次都在服务端重新生成。</p>
-<p>代码： <code>location.replace(location.href);</code> </p>
-<p><strong>返回并刷新页面：</strong></p>
-<p><code>location.replace(document.referrer)</code>;
-</p>
-<p><code>document.referrer</code> //前一个页面的URL</p>
-<p>不要用 <code>history.go(-1)</code>，或 <code>history.back()</code>;来返回并刷新页面，这两种方法不会刷新页面。</p>
-<p><strong>Javascript刷新页面的几种方法：</strong></p>
-<pre class="brush:js">
-history.go(0) 
-location.reload() 
-location=location 
-location.assign(location) 
-document.execCommand('Refresh') 
-window.navigate(location) 
-location.replace(location) 
-document.URL=location.href
-</pre>
-<p><strong>自动刷新页面的方法:</strong></p>
-<p><strong>1，页面自动刷新：把如下代码加入<code>&lt;head&gt;</code>区域中</strong></p>
-<pre class="brush:js">
-  &lt;meta http-equiv="refresh" content="20"&gt;
-</pre>
-<p>其中20指每隔20秒刷新一次页面.</p>
-<p><strong>2，页面自动跳转：把如下代码加入<code>&lt;head&gt;</code>区域中</strong></p>
-<pre class="brush:js">
-  &lt;meta http-equiv="refresh" content="20;url=http://www.manzj.net"&gt;
-</pre>
-<p>其中20指隔20秒后跳转到http://www.manzj.net页面</p>
-<p><strong>3，页面自动刷新js版</strong></p>
-<pre class="brush:js">
-    <script language="JavaScript">
-      function myrefresh()
-      {
-         window.location.reload();
+                    <p>在接下来的文章中，我们将向大家介绍通过<code>jQuery</code>实现放大镜效果。</p>
+                    <p><strong>1、实现原理</strong></p>
+                    <p>首先，我们讲解一下放大镜效果的实现方式：</p>
+                    <p><strong>方法一：</strong>准备一张高像素的大图，当鼠标放到原图上，加载显示大图的对应位置。</p>
+                    <p><strong>方法二：</strong>对原图片进行放大，也就是调整原图的长和宽。</p>
+                    <p>上面我们介绍了通过两种方式实现放大镜效果，接下来，我们将以上的两种方式应用到我们的<code>jQuery</code>插件中。</p>
+                    <p>首先，我们需要一个<code>img</code>元素显示原图对象，还需要一个容器作为显示框；显示框里面存放大图对象。当鼠标移动到原图上时，通过对大图进行绝对定位来显示对应的部位，实现类似放大镜的效果。</p>
+                  <pre class="brush:xhtml;">
+<!doctype html>
+<html lang="en-US">
+<head>
+ <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+ <title>jQuery Image Zoom Demo</title>
+ <meta name="author" content="Jackson Huang">
+</head>
+<body>
+<div class="magnify">
+<div class="large"></div>
+<img class="small" src="./img/1.jpg" width="700" />
+</div>
+</body>
+</html>
+                  </pre>
+                  <p>上面，我们定义了<code>small</code> 对象用于显示原图，而<code>large</code>对象作为一个显示框用来显示大图的对应位置。</p>
+                <p><strong>2、mousemove事件</strong></p>
+                <p>接下来，我们通过<code>jQuery</code>插件形式来实现放大镜效果，当鼠标移动到<code>small</code>对象上方时，就会在<code>large</code> 对象中显示大图的对应位置，这就涉及到<code>mousemove</code>事件了，所以，我们需要实现<code>mousemove</code>事件的监听方法。</p>
+                <p>现在，让我们实现<code>jquery.imagezoom.js</code>插件吧！</p>
+                <pre class="brush:js;">
+      (function ($) {
+      
+       $.fn.imageZoom = function (options) {
+      
+       // The native width and height of the image.
+       var native_width = 0,
+        native_height = 0,
+        current_width = 0,
+        current_height = 0,
+        $small = $(".small"),
+        $large = $(".large");
+      
+       $(".magnify").mousemove(function (e) {
+        /* Act on the event */
+        if (!native_width && !native_height) {
+         var image_object = new Image();
+         image_object.src = $small.attr('src');
+      
+         // Gets the image native height and width.
+         native_height = image_object.height;
+         native_width = image_object.width;
+      
+         // Gets the image current height and width.
+         current_height = $small.height();
+         current_width = $small.width();
+      
+    } else {
+
+     // Gets .maginfy offset coordinates.
+     var magnify_offset = $(this).offset(),
+
+      // Gets coordinates within .maginfy.
+      mx = e.pageX - magnify_offset.left,
+      my = e.pageY - magnify_offset.top;
+
+     // Checks the mouse within .maginfy or not.
+     if (mx &lt; $(this).width() && my &lt; $(this).height() && mx &gt; 0 && my &gt; 0) {
+      $large.fadeIn(100);
+     } else {
+      $large.fadeOut(100);
+     } if ($large.is(":visible")) {
+      /* Gets the large image coordinate by ratio 
+         small.x / small.width = large.x / large.width
+         small.y / small.height = large.y / large.height
+         then we need to keep pointer in the centre, 
+         so deduct the half of .large width and height.
+        */
+        var rx = Math.round(mx / $small.width() * native_width - $large.width() / 2) * -1,
+         ry = Math.round(my / $small.height() * native_height - $large.height() / 2) * -1,
+         bgp = rx + "px " + ry + "px",
+         px = mx - $large.width() / 2,
+         py = my - $large.height() / 2;
+        $large.css({
+         left: px,
+         top: py,
+         backgroundPosition: bgp
+        });
+       }
+
       }
-      setTimeout('myrefresh()',1000); //指定1秒刷新一次
-      </script>
+     });
+    });
+
 </pre>
-<p><strong>4，JS刷新框架的脚本语句</strong></p>
-<pre class="brush:js">
-    //刷新包含该框架的页面用   
-    <script language=JavaScript>
-       parent.location.reload();
-    </script>
-    //子窗口刷新父窗口
-    <script language=JavaScript>
-        self.opener.location.reload();
-    </script>
-    (　或　<a href="javascript:opener.location.reload()">刷新</a>   )
-    //刷新另一个框架的页面用   
-    <script language=JavaScript>
-       parent.另一FrameID.location.reload();
-    </script>
-  
+<p>上面，我实现了<code>mousemove</code>事件的监听方法，当鼠标移动到<code>magnify</code>对象中，我们需要获取当前鼠标的相对坐标位置，下面我们通过图片讲解如何获取鼠标的相对坐标位置。</p>
+<p><strong>3、相对坐标</strong></p>
+<p ><img id="theimg" alt="" onclick="window.open(this.src)" src="http://files.jb51.net/file_images/article/201512/20151220120556163.png" /></p>
+<p >图1鼠标相对坐标位置</p>
+<p>当鼠标移动到<code>magnify</code>对象中，我们需要获取鼠标在<code>magnify</code>中的相对坐标位置，这里我们把相对坐标定义为(<code>mx</code> ,<code>my</code> )，通过上图我们知道相对坐标等于(<code>pageX</code> - <code>offsetLeft</code>, <code>pageY</code> - <code>offsetTop</code>)。</p>
+<p>现在，我们已经获取鼠标在magnify对象中的坐标值，接下来，需要获取对应大图的相应坐标，这里我们把大图的对应坐标定义为(<code>rx</code> ,<code>ry</code>)，我们可以通过比例关系获取(<code>rx</code> ,<code>ry</code> )的值。</p>
+<p><code>mx / small.width （原图的宽）= rx / native_width（大图的宽）</code></p>
+<p><code>my / small.height （原图的长）= ry / native_height（大图的长）</code></p>
+<p>通过上面的比例关系，我们知道大图的坐标(<code>rx</code> ,<code>ry</code>)等于(<code>mx/small.width*native_width, my/small.height*native_height</code>)。</p>
+<p>通过上述的公式，我们可以获取大图对应坐标位置，当鼠标移动到<code>magnify</code>对象中就显示对应位置的大图部位，接下来我们需要实现大图的加载实现了。</p>
+<p><strong>4、background-position属性</strong><br />
+在实现大图加载显示之前，首先介绍CSS中背景定位<code>background-position</code>的知识。</p>
+<p ><img id="theimg" alt="" onclick="window.open(this.src)" src="http://files.jb51.net/file_images/article/201512/20151220120722321.png" /></p>
+<p >图2 css background-position</p>
+<p>上面，有一个<code>100x100</code>像素的图片它由四种颜色组成，而且每种颜色占<code>50 x50</code>像素，接下来，我们将通过修改该图片CSS的<code>background-position</code>属性值来显示该图片的不同位置。</p>
+<p>我们看到在大正方形下有两行小正方形，它们显示的颜色位置都不相同，这里我们通过修改每个div元素CSS的<code>background-position</code>属性值实现的。</p>
+<p>例如：第一行的蓝色方形，我们设置CSS的<code>background-position</code>属性为：<code>0px -50px</code>;这相当于原图往上移动50px，第一行的其他方形也通过左右和上下移动实现的。</p>
+<p>但第二行的方形就显得更加奇怪了，因为它们都由四种颜色组成，而且颜色的位置都不一样，这究竟是怎样实现的呢？</p>
+<p>例如：第二行的第一个方形，我们设置CSS的<code>background-position</code>属性为：<code>25px </code>25px;这相当于原图向下和向右移动了<code>25px </code>，由于image wrap的作用它会填充剩余位置的颜色。</p>
+<p>现在，我们已经了解到了CSS的<code>background-position</code>属性的作用，所以我们通过修改large对象的<code>background-position</code>属性来显示对应的图像部分，具体实现如下：</p>
+<pre class="brush:css;">
+$large.css({
+ left: px,
+ top: py,
+ backgroundPosition: bgp
+});
 </pre>
-<p>如果想关闭窗口时刷新或想开窗时刷新，在<code>&lt;body&gt;</code>中调用以下语句即可。</p>
-<pre class="brush:js">
-  <body onload="opener.location.reload()"> 开窗时刷新
-  <body onUnload="opener.location.reload()"> 关闭时刷新
-  <script language="javascript">
-  window.opener.document.location.reload()
-  </script>
+<p>上面，我们通过加载大图的方式来实现放大镜效果，接下来，我们将介绍通过调整原图的长和宽来实现放大镜效果。</p>
+<p><strong>5、mousewheel事件</strong><p>
+<p>前面，我们通过<code>mousemove</code>事件来放大图片，这里我们将通过鼠标的滚轮事件实现图片放大效果。</p>
+<p>由于，不同的浏览器有不同的滚轮事件。主要是有三种：<code>onmousewheel（IE 6/7/8）</code>、<code>mousewheel（IE9，Chrome，Safari和Opera）</code>和<code>DOMMouseScroll</code>（只有<code>Firefox</code>支持），关于这三个事件这里不做详细的介绍了。</p>
+<p>由于不同浏览器之间存在着差异，为了实现浏览器之间的兼容，所以，我们需要监听以上三种滚轮事件（<code>onmousewheel</code>，<code>mousewheel</code>和<code>DOMMouseScroll</code>），具体实现如下：</p>
+
+<pre class="brush:js;">
+$(".magnify").bind('DOMMouseScroll mousewheel onmousewheel', function(e) {
+});
 </pre>
-<p>一、先来看一个简单的例子：</p>
-<p>下面以三个页面分别命名为frame.html、top.html、bottom.html为例来具体说明如何做。 
-frame.html 由上(top.html)下(bottom.html)两个页面组成，代码如下：</p>
-<pre class="brush:js">
-    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
-    <HTML> 
-    <HEAD> 
-    <TITLE> frame </TITLE> 
-    </HEAD> 
-    <frameset rows="50%,50%"> 
-    <frame name=top src="top.html"> 
-    <frame name=bottom src="bottom.html"> 
-    </frameset> 
-    </HTML> 
+
+<p>上面，我们实现了兼容不同浏览器的滚轮事件监听方法，接下来，判断滚轮向上或向下也要考虑不同浏览器的兼容性，主流的览器（<code>IE</code>、<code>Opera</code>、<code>Safari</code>、<code>Firefox</code>、<code>Chrome</code>）中<code>Firefox</code> 使用<code>detail</code>，其余四类使用<code>wheelDelta</code>；两者只在取值上不一致，代表含义一致，<code>detail</code>与<code>wheelDelta</code>只各取两个值，<code>detail</code>只取±3，<code>wheelDelta</code>只取±120，其中正数表示为向上，负数表示向下。</p>
+<p>由于<code>detail</code>和<code>wheelDelta</code>都有两个值表示向上或向下滚动，所以不同浏览器间可以通过以下方式实现兼容，具体实现如下：</p>
+
+<pre class="brush:js;">
+$(".magnify").bind('DOMMouseScroll mousewheel onmousewheel', function(e) {
+
+ // cross-browser wheel delta
+ var e = window.event || e; // old IE support.
+ var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+});
+
 </pre>
-<p>
-  现在假设top.html (即上面的页面) 有七个button来实现对bottom.html (即下面的页面) 的刷新，可以用以下七种语句，哪个好用自己看着办了。 
-top.html 页面的代码如下： 
+
+<p>上面，我们已经处理了不同浏览器滚轮监听方法，当用户滚动滚轮时需要动态地修改原图的尺寸，这里我们定义缩放比<code>scaling</code>为0.3，也就是说每当用户滚动一下滚轮原图就按0.3的比例进行缩放，具体实现如下：</p>
+
+<pre class="brush:xhtml;">
+// Gets the image scaling height and width.
+native_height += (native_height * scaling * delta);
+native_width += (native_width * scaling * delta);
+
+// Update backgroud image size.
+$large.css('background-size', native_width + "px " + native_height + "px");
+
+</pre>
+
+<p>现在，我们已经实现了通过滚轮对图片进行缩放查看的效果，完整的实现如下：<br />
 </p>
-<pre class="brush:js">
-    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
-    <HTML> 
-    <HEAD> 
-    <TITLE> top.html </TITLE> 
-    </HEAD> 
-    <BODY> 
-    <input type=button value="刷新1" onclick="window.parent.frames[1].location.reload()"><br> 
-    <input type=button value="刷新2" onclick="window.parent.frames.bottom.location.reload()"><br> 
-    <input type=button value="刷新3" onclick="window.parent.frames['bottom'].location.reload()"><br> 
-    <input type=button value="刷新4" onclick="window.parent.frames.item(1).location.reload()"><br> 
-    <input type=button value="刷新5" onclick="window.parent.frames.item('bottom').location.reload()"><br> 
-    <input type=button value="刷新6" onclick="window.parent.bottom.location.reload()"><br> 
-    <input type=button value="刷新7" onclick="window.parent['bottom'].location.reload()"><br> 
-    </BODY> 
-    </HTML> 
+
+<pre class="brush:js;">
+(function($) {
+
+ $.fn.imageZoom = function(options) {
+
+
+  // The native width and height of the image.
+  var defaults = {
+   scaling: 0.3
+  };
+
+  // Combines object defaults and options.
+  options = $.extend(defaults, options),
+   native_width = 0,
+   native_height = 0,
+   current_width = 0,
+   current_height = 0,
+   $small = $(".small"),
+   $large = $(".large");
+
+  $(".magnify").mousemove(function(e) {
+   /* Act on the event */
+   if (!native_width && !native_height) {
+    var image_object = new Image();
+    image_object.src = $small.attr('src');
+
+    // Gets the image native height and width.
+    native_height = image_object.height;
+    native_width = image_object.width;
+
+    // Gets the image current height and width.
+    current_height = $small.height();
+    current_width = $small.width();
+
+   } else {
+
+    // Gets .maginfy offset coordinates.
+    var magnify_offset = $(this).offset(),
+
+    // Gets coordinates within .maginfy.
+     mx = e.pageX - magnify_offset.left,
+     my = e.pageY - magnify_offset.top;
+
+    // Checks the mouse within .maginfy or not.
+    if (mx &lt; $(this).width() && my &lt; $(this).height() && mx &gt; 0 && my &gt; 0) {
+     $large.fadeIn(100);
+    } else {
+     $large.fadeOut(100);
+    }
+    if ($large.is(":visible")) {
+     /* Gets the large image coordinate by ratio 
+     small.x / small.width = large.x / large.width
+     small.y / small.height = large.y / large.height
+     then we need to keep pointer in the centre, 
+     so deduct the half of .large width and height.
+     */
+     var rx = Math.round(mx / $small.width() * native_width - $large.width() / 2) * -1,
+      ry = Math.round(my / $small.height() * native_height - $large.height() / 2) * -1,
+      bgp = rx + "px " + ry + "px",
+      px = mx - $large.width() / 2,
+      py = my - $large.height() / 2;
+     $large.css({
+      left: px,
+      top: py,
+      backgroundPosition: bgp
+     });
+    }
+
+   }
+  });
+
+  $(".magnify").bind('DOMMouseScroll mousewheel onmousewheel', function(e) {
+   var image_object = new Image();
+   image_object.src = $large.attr('src');
+
+
+   // cross-browser wheel delta
+   e = window.event || e; // old IE support.
+   var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+
+   // Gets the image scaling height and width.
+   native_height += (native_height * defaults.scaling * delta);
+   native_width += (native_width * defaults.scaling * delta);
+
+   // The image can't smaller than the original.
+   if (native_height &lt; current_height) {
+    native_height = current_height;
+   }
+
+   if (native_width &lt; current_width) {
+    native_width = current_width;
+   }
+
+   // console.log("native_height: " + native_height + " native_width: " + native_width);
+
+   // Gets .maginfy offset coordinates.
+   var magnify_offset = $(this).offset(),
+    mx = e.pageX - magnify_offset.left,
+    my = e.pageY - magnify_offset.top;
+
+   // Update backgroud image size.
+   $large.css('background-size', native_width + "px " + native_height + "px");
+
+   /* Gets the large image coordinate by ratio 
+   small.x / small.width = large.x / large.width
+   small.y / small.height = large.y / large.height
+   then we need to keep pointer in the centre, 
+   so deduct the half of .large width and height.
+   */
+   var rx = Math.round(mx / $small.width() * native_width - $large.width() / 2) * -1,
+    ry = Math.round(my / $small.height() * native_height - $large.height() / 2) * -1,
+    bgp = rx + "px " + ry + "px",
+    px = mx - $large.width() / 2,
+    py = my - $large.height() / 2;
+
+   $large.css({
+    left: px,
+    top: py,
+    backgroundPosition: bgp
+   });
+  });
+ };
+})(jQuery);
+ 
+
 </pre>
-<p>下面是bottom.html页面源代码，为了证明下方页面的确被刷新了，在装载完页面弹出一个对话框。</p>
-<pre class="brush:js">
-    <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
-    <HTML> 
-    <HEAD> 
-    <TITLE> bottom.html </TITLE> 
-    </HEAD> 
-    <BODY onload="alert('我被加载了！')"> 
-    <h1>This is the content in bottom.html.</h1> 
-    </BODY> 
-    </HTML> 
-</pre>
-<p>解释一下： </p>
-<pre class="brush:js">
-  1.window指代的是当前页面，例如对于此例它指的是top.html页面。 
-  2.parent指的是当前页面的父页面，也就是包含它的框架页面。例如对于此例它指的是framedemo.html。 
-  3.frames是window对象，是一个数组。代表着该框架内所有子页面。 
-  4.item是方法。返回数组里面的元素。 
-  5.如果子页面也是个框架页面，里面还是其它的子页面，那么上面的有些方法可能不行。 
-  附： 
-  Javascript刷新页面的几种方法： 
-  1 history.go(0) 
-  2 location.reload() 
-  3 location=location 
-  4 location.assign(location) 
-  5 document.execCommand('Refresh') 
-  6 window.navigate(location) 
-  7 location.replace(location) 
-  8 document.URL=location.href 
-</pre>
-<p>二、java在写Servler,Action等程序时，要操作返回页面的话（如谈出了窗口，操作完成以后，关闭当前页面，刷新父页面）</p>
-<pre class="brush:js">
-    1 PrintWriter out = response.getWriter(); 
-    2 out.write("<script type=\"text/javascript\">"); 
-    3 ////子窗口刷新父窗口 
-    4 out.write("self.opener.location.reload();"); 
-    5 //关闭窗口 
-    6 out.write("window.opener=null;"); 
-    7 out.write("window.close();"); 
-    8 out.write("</script>"); 
-</pre>
-<p>三、JS刷新框架的脚本语句 </p>
-<p>
-  1.如何刷新包含该框架的页面用 
-</p>
-<pre class="brush:js">
-    <script language=JavaScript> 
-    parent.location.reload(); 
-    </script> 
-</pre>
-<p>2.子窗口刷新父窗口 </p>
-<pre class="brush:js">
-   <script language=JavaScript> 
-  self.opener.location.reload(); 
-  </script>  
-</pre>
-<p>3.如何刷新另一个框架的页面用 （上面的实例以说明了）  </p>
-<pre class="brush:js">
-    语句1. window.parent.frames[1].location.reload(); 
-    语句2. window.parent.frames.bottom.location.reload(); 
-    语句3. window.parent.frames["bottom"].location.reload(); 
-    语句4. window.parent.frames.item(1).location.reload(); 
-    语句5. window.parent.frames.item('bottom').location.reload(); 
-    语句6. window.parent.bottom.location.reload(); 
-    语句7. window.parent['bottom'].location.reload(); 
-</pre>
-<p>3..如果想关闭窗口时刷新或者想开窗时刷新的话，在<code>&lt;body&gt;</code>中调用以下语句即可。  </p>
-<p><code>&lt;body onload="opener.location.reload()"&gt;</code></p>
-<p>开窗时刷新 </p>
-<p><code>&lt;body onUnload="opener.location.reload()"&gt;</code></p>
-<p>关闭时刷新  </p>
-<pre class="brush:js">
-    <script language="javascript"> 
-  window.opener.document.location.reload() 
-  </script> 
-</pre>
-<!-- 正文 -->
+
+<p>上面，我们实现了放大镜效果，当我们鼠标停留在图片上方会自动放大图片的相应部位，当然我们可以通过滚轮调整放大的比例。</p>
+<p>上面我们介绍了如何实现放大镜效果，总的来说，我们可以通过两种方式实现放大镜效果，而且在文中都给出了详细的介绍，通过<code> mousemove</code>事件实现加载大图的效果，<code>mousewheel</code>事件实现动态修改原图的尺寸。</p>
+
+                 <!-- 正文end -->
                   </div>
-
-
-<p>
-  　　3、老板假装懂你说的这些技但实际上他完全不知道你在说什么 。</p>
-<p>
-  　　4、时不时的，老板在检查你刚刚完成的工作时，要求按新想法重新开发。</p>
-<p>
-  　　7、时间全浪费在写周报、日报、方案，而不是用在开发好的软件上。</p>
-<p>
-  　　8、你使用的开发电脑是一个老古董，应该放到博物馆里，而不是放到你的桌面上。</p>
-<p>
-  　　9、每次当你修改一个bug时，就会同时发现另外一个bug。</p>
-<p>
-  　　10、每次当你全新身心的解决一个问题时，项目经理总是过来打搅你，打断你的思路。</p>
-<p>
-  　　11、网速超慢，你的时间全部浪费在等待等待中....</p>
-<p>
-  　　12、项目在距离最后交付成果的时候，才匆匆忙忙启动。</p>
-<p>
-  　　13、你们的网站只敢在非高峰期部署新程序，这就是说，你需要每周六晚上加班。</p>
-<p>
-  　　14、领导者接项目的时候，根本不考虑是否可以实现客户天马行空的需求。</p>
-<p>
-  　　15、你得不到尊重，你的意见不被听取，你感觉像台机器。</p>
-<p>
-  　　16、每到下班的时候，领导会交待你还有工作没完成。</p>
-<p>
-  　　17、你用了全天唯一休息的5分钟看来了篇帖子。</p>
-<p>
-  　　18、最糟糕的是，你的网速太慢，根本打不开“码农之家”的网页。</p>
-
-
-
-
-
-             
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <p class="leader">
-  　　<a href="http://weibo.com/chenzimu7/" target="_blank">@陈子木</a> 网站的重新设计可能会为它的成长和发展带来新的契机。随着时间的推移，网站的访问者变了，而网站本身也有必要随之进化。它并不一定非得和过去一样，你可以随着网站设计的趋势重新构建它。</p>
-<p>
-  　　当你重新设计网站的时候，功能实现与用户体验是你需要考虑的首要因素。以下的十个重设案例中，包括了著名的社交网站Facebook，搜索巨头Google，视频巨擘Youtube，以及权威的影视评分网站IMDB。看看这些案例，再点击每张图片上方的链接访问原始网页，你可以对比以下它们的差异。琢磨一下为什么这些重设是成功的，你可能会从中受益匪浅。</p>
-<h3>
-  　Top 10:Amazon</h3>
-  <p>
-  　　这一设计稿出自设计师James Cipriano之手，并且发布在<a href="http://dribbble.com/shots/1388275-Amazon-Streaming-Redesign" target="_blank">Dribbble</a>上。James强化了Amazon的标识色黄色，并应用到侧边栏上。而主体部分的产品图则比目前的Amazon地设定更清晰规整。右上角的个人信息用圆形的头像替代了，而这正是目前最流行的表现形式。原始的Amazon网站<a href="http://www.amazon.com" target="_blank">戳这里</a>。</p>
-  <p>
-  　　<a href="http://dribbble.com/shots/1388275-Amazon-Streaming-Redesign" target="_blank">James Cipriano对Amazon的重新设计</a></p>
-<h3>
-  　Top 9:IMDB</h3>
-  <p>
-  　　设计师Vladimir Kudinov在自己的Behance页面中发布了这一设计作品。原始的IMDB首页设计来的更传统，而Vladimir的设计则采用了图片拼贴的方式来呈现，大小错落的照片围绕着纯色底的文字选框，充满了视觉冲击力。原始的IMDB网站<a href="www.imdb.com" target="_blank">戳这里</a>(需要翻墙)。</p>
-<p>
-  　　<a href="https://www.behance.net/gallery/IMDB-Filmpage-Concept/1678386" target="_blank">Vladimir Kudinov对IMDB的重新设计</a></p>
-<h3>
-  　Top 8:Google</h3>
-
-<p>
-  　　这一重设作品同样发布在Behance上面，作者是Ayman Shaltoni。Ayman的设计非常有特色，Google的Logo字体从衬线体替换成了更现代的非衬线体，原本清新的糖果色被更加复古的色调所替代。可能是受到了古老的Mac OS 8.5的启发，原本置于顶端的导航栏被移动到下方，并且可以像抽屉一样打开，这可能是这一重设最为亮眼的地方。原始的Google网站<a href="http://www.google.com.hk" target="_blank">戳这里</a>。</p>
-  <p>
-  　　<a href="https://www.behance.net/gallery/Google-Redesign-Concept-Freebie/7831963" target="_blank">Ayman Shaltoni对Google的重新设计</a></p>
-  
-<h3>
-  　Top 7:BBC</h3>
-  <p>
-  　　Micheal Coyle也认为图片是最抓人眼球的。他重新设计BBC的首页的时候同样选择了将图片作为呈现的主体，去除大量的文字堆砌，更加直观。左侧的侧边栏替代原本BBC网站上各个区块的标题，整合度更高。原始的BBC网站<a href="http://www.bbc.com" target="_blank">戳这里</a>。</p>
-  <p>
-  　　<a href="http://dribbble.com/shots/1017201-BBC-Website-Redesign" target="_blank"> Michael Coyle对BBC的重新设计</a></p>
-<h3>
-  　Top 6:Twitter</h3>
-<p>
-  　　Zsolt所设计的Twitter网站采用了独特的分栏设计。有研究表明正常人阅读的时候，一眼只能看到几个字，这也是为什么报纸的排版中每一栏的宽度都不大。而Zsolt的设计与此不谋而合。另外，Zsolt的twitter页面的信息维度也更加的扁平，页面可以向左滑动，看到更多的栏目，也可以向下滚动，阅读更多的回复。原始的twitter网页<a href="http://twitter.com" target="_blank">戳这里</a>（需要翻墙）。</p>
-  <p>
-  　　<a href="https://www.behance.net/gallery/Twitter-redesign-concept/6806367" target="_blank">Zsolt Hutvagner对Twitter的重新设计</a></p>
-<h3>
-  　Top 5:Wikipedia</h3>
-  <p>
-  　　维基百科也许是截至目前最好的百科全书。目前的维基百科页面极其素雅，文字远多于图片，因此，排版就显得尤为重要了。George基于现有页面和栏目重新设计了维基百科的首页。左侧以图片为日期索引，颇具匠心，而右侧则使用图文混排的形式，以相同尺寸的矩形区块来划分不同的栏目。值得一提的是，George在此也引入了时间线，拓展了信息呈现的维度。原始的维基百科的页面<a href="http://zh.wikipedia.org" target="_blank">戳这里</a>。</p>
-  <h3>
-  　Top 4:Soundcloud</h3>
-  <p>
-  　　Soundcloud号称是音频分享界的Youtube，无出其右者。Anton保留了Soundcloud原始的配色方案，增加了banner图，强化了主体部分的排版，为右侧的个人信息栏增加了浅灰色的底色，区分出了区块。比起原本的Soundcloud页面，Anton的设计显得更加清晰，又不失其简约风格的神韵。原始的Soundcloud页面<a href="http://www.soundcloud.com" target="_blank">戳这里</a>（需要翻墙）。</p>
-  <p>
-  　　<a href="http://dribbble.com/shots/1450328-SoundCloud-Site-Redesign-2" target="_blank">Anton Skugarov 对Soundcloud的重新设计</a></p>
-<h3>
-  　Top 3:Youtube</h3>
-  <p>
-  　　被封为视频领域传奇的Youtube就无需深入介绍了吧？同以上的几个案例一样，Alexandr对于Youtube的改造方向也选择了扁平化。这套重新设计的页面保留了Google的配色体系，左侧的个人信息栏使用了经典的红黑配色，在浅色的底色上显得非常显眼，也让整个版面不那么单调了。视频的排布方式也遵循一贯的排布方式，中间是主要的视频内容，右侧为相关推荐。原始的Youtube网页<a href="http://www.youtube.com" target="_blank">戳这里</a>（需要翻墙）。</p>
-  <p>
-  　　<a href="http://dribbble.com/shots/829473-YouTube-redesign" target="_blank"> Alexandr Brinza对Youtube的重新设计</a></p>
-<h3>
-  　Top 2:Netflix</h3>
-  <p>
-  　　不知道Netflix？那你应该知道连奥巴马都喜欢看的美剧《纸牌屋》吧？这就是Netflix出品的。作为美国最著名的在线影片租赁提供商，Netflix沿用着充满复古范儿的Logo，以及相对古板的页面排布方案。Vivek对Netflix的重新设计还是比较彻底的，重新设计的logo，扁平的页面。三栏式的页面设计，方便用户筛选他们喜欢的影片，而影片的图文混排比也比之前的版式更加清晰出众。原始的Netflix的页面<a href="http://www.netflix.com" target="_blank">戳这里</a>（大陆无法观影）。</p>
-  <p>
-  　　<a href="http://dribbble.com/shots/1169194-Netflix-Redesign" target="_blank"> Vivek Venkatraman对Netflix的重新设计</a></p>
-<h3>
-  　Top 1:Facebook</h3>
-  <p>
-  　　传奇的社交网站Facebook已经不是第一次被人重新设计了。但是这一次的设计方案还是令人印象非常深刻的。Fred采用了微软的Metro设计风格，蓝色与白色的色块来承载文字信息，与图片错落混排，效果极为养眼。深色的侧边栏与顶部的蓝色导航栏，也同样形成色彩对比，清晰明了。<a href="http://www.facebook.com" target="_blank">戳这里</a>访问Facebook，当然，你得翻墙才行。</p>
-  <p>
-  　　<a href="http://dribbble.com/shots/879822-Facebook-New-Look-Side-Panel" target="_blank"> Fred Nerby对Facebook的重新设计</a></p>
-  <p>
-  　　原文地址：<a href="http://www.themost10.com/concept-redesign-examples-of-websites/" target="_blank">themost10</a><br>
-
-  　　优设翻译：<a href="http://weibo.com/chenzimu7/" target="_blank">@陈子木</a><br>
-</p>
-
-
-
-
-<pre class="brush:java;">
-package com.use.test.ws.server;
- 
-import javax.jws.WebParam;
- 
-import javax.jws.WebService;
- 
-import javax.jws.soap.SOAPBinding;
- 
-import javax.jws.soap.SOAPBinding.Style;
- 
-import com.use.test.ws.entity.User;
- 
-/**
- * <b>function:</b>定制客户端请求WebService所需要的接口
- */
- 
-@WebService
- 
-@SOAPBinding(style = Style.RPC)
- 
-public interface IService {
-    public User getUserByName(@WebParam(name = "name") String name);
-    public void setUser(User user);
-}
-
-
-</pre>
-<pre class="brush:java;">
-  package com.use.test.ws.server;
- 
-import java.util.Date;
-import javax.jws.WebParam;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.jws.soap.SOAPBinding.Style;
-import com.use.test.ws.entity.User;
- 
-/**
- * <b>function:</b> WebService传递复杂对象，如JavaBean、Array、List、Map等
- */
-@WebService
-@SOAPBinding(style = Style.RPC)
-@SuppressWarnings("deprecation")
-public class TestService implements IService {
-    public User getUserByName(@WebParam(name = "name") String name) {
-        User user = new User();
-        user.setId(new Date().getSeconds());
-        user.setName(name);
-        user.setAddress("china");
-        user.setEmail(name + "@test.com");
-        return user;
-    }
-    public void setUser(User user) {
-        System.out.println("############Server setUser###########");
-        System.out.println("setUser:" + user);
-    }
-}
-
-
-</pre>
-<p>
-  　　<strong>2.7 在src目录下建立applicationContext-client.xml，并放入以下内容：</strong></p>
-<pre class="brush:xml;">
-  <span xmlns="http://www.w3.org/1999/xhtml" style=""><span xmlns="http://www.w3.org/1999/xhtml" style=""><?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:jaxws="http://cxf.apache.org/jaxws"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-3.0.xsd
-    http://cxf.apache.org/jaxws 
-    http://cxf.apache.org/schemas/jaxws.xsd">    
-    <import resource="classpath:META-INF/cxf/cxf.xml"/>
-  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
-  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/> 
-  <bean id="userServiceBean" class="com.use.test.ws.server.TestService"/>   
-  <bean id="inMessageInterceptor" class="org.apache.cxf.interceptor.LoggingInInterceptor"/>  
-  <bean id="outLoggingInterceptor" class="org.apache.cxf.interceptor.LoggingOutInterceptor"/>
-  <jaxws:server id="userService" serviceClass="com.use.test.ws.server.IService" address="/Users">
-      <jaxws:serviceBean>
-          <ref bean="userServiceBean"/>
-      </jaxws:serviceBean>
-      <jaxws:inInterceptors>
-          <ref bean="inMessageInterceptor"/>
-      </jaxws:inInterceptors>
-      <jaxws:outInterceptors>
-          <ref bean="outLoggingInterceptor"/>
-      </jaxws:outInterceptors>
-  </jaxws:server>
-</beans>
-</span></span><span style="color:#099000;"><span style="color:#000000;font-weight: bold;"><span style="color:#000000;font-weight: bold;"></span></span></span>
-</pre>
-<p>
-  　　<strong>2.8 将建立的JAVA工程导出jar包，只导出src下面的内容即，并将这个jar包放到上面的TOMCAT工程中的ws_test/WEB-INF/lib目录下，并启动TOMCAT服务器；</strong></p>
-  <p>
-  　　<strong>2.9 启动成功后，此时访问URL：http://localhost:8080/ws_test/Users?wsdl，应该会看到WSDL的输出。</strong></p>
-  <p>
-  　　<strong></strong></p>
-  <h3>
-  　3、 编写webService客户端</h3>
-  <p>
-  　　<strong>3.1 独立的客户端请求类</strong></p>
-<pre class="brush:java;">
-package com.use.test.ws.client;
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import com.use.test.ws.entity.User;
-import com.use.test.ws.server.IService;
-public class TestClient {
-    public static void main(String[] args) {
-        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-        factory.setServiceClass(IService.class);
-        factory.setAddress("http://localhost:8080/ws_test/Users");
-        IService service = (IService) factory.create();
-        System.out.println("#############Client getUserByName##############");
-        User user = service.getUserByName("hoojo");
-        System.out.println(user);
-        user.setAddress("China-Guangzhou");
-        service.setUser(user);
-    }
-}
-</pre>
-<p>
-  　　<strong>3.2 与SPRING的集成，首先需要在src下面建立配置文件applicationContext-client.xml，将输入以下内容：</strong></p>
-<pre class="brush:xml;">
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:jaxws="http://cxf.apache.org/jaxws"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-3.0.xsd
-    http://cxf.apache.org/jaxws
-    http://cxf.apache.org/schemas/jaxws.xsd">
-    <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-    <jaxws:client id="userWsClient" serviceClass="com.use.test.ws.server.IService" address="http://localhost:8080/ws_test/Users"/>
-</beans>
-</pre>
-<p>
-  　　<strong>3.3 建立JAVA类</strong></p>
-  <pre class="brush:java;">
-    package com.use.test.ws.client;
- 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import com.use.test.ws.entity.User;
-import com.use.test.ws.server.IService;
- 
-/**
- * <b>function:</b>请求Spring整合CXF的WebService客户端
- */
- 
-public class SpringUsersWsClient {
-    public static void main(String[] args) {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext-client.xml");
-        IService service = ctx.getBean("userWsClient", IService.class);
-        System.out.println("#############Client getUserByName##############");
-        User user = service.getUserByName("hoojo");
-        System.out.println(user);
-        user.setAddress("China-Guangzhou");
-        service.setUser(user);
-    }
-}
-  </pre>
-  <p>
-  　　<strong>到此完整例子已经完成，效果请自行测试！</strong></p>
-
-
-                
-
-                
-                
-
-
-
-
-
-
-
-
 
 <!-- end -->
 
