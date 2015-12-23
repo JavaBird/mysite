@@ -119,298 +119,138 @@
                 </div>
                 <div class="showContext">
                   <!-- start -->
-                  <blockquote><strong>[前言]　</strong>本文旨在帮助广大码农分析、理解基于<code>jQuery</code>实现放大镜效果。相信大家在一些电商的网站（例如：凡客，京东商城，阿里巴巴等）上看到过这个效果，它一般应用于放大查看商品图片。</blockquote>
+                  <blockquote><strong>[前言]　</strong>在WEB数据传输过程中，json是以文本，即字符串的轻量级形式传递的，而客户端一般用JS操作的是接收到的JSON对象，所以，JSON对象和JSON字符串之间的相互转换、JSON数据的解析是关键。今天我们通过实例具体讲述一下<code>jQuery</code>解析<code>json</code>串的方法。</blockquote>
 
                   <div class="realcontext">
                   <!-- 正文 -->
-                    <p>在接下来的文章中，我们将向大家介绍通过<code>jQuery</code>实现放大镜效果。</p>
-                    <p><strong>1、实现原理</strong></p>
-                    <p>首先，我们讲解一下放大镜效果的实现方式：</p>
-                    <p><strong>方法一：</strong>准备一张高像素的大图，当鼠标放到原图上，加载显示大图的对应位置。</p>
-                    <p><strong>方法二：</strong>对原图片进行放大，也就是调整原图的长和宽。</p>
-                    <p>上面我们介绍了通过两种方式实现放大镜效果，接下来，我们将以上的两种方式应用到我们的<code>jQuery</code>插件中。</p>
-                    <p>首先，我们需要一个<code>img</code>元素显示原图对象，还需要一个容器作为显示框；显示框里面存放大图对象。当鼠标移动到原图上时，通过对大图进行绝对定位来显示对应的部位，实现类似放大镜的效果。</p>
-                  <pre class="brush:xhtml;">
-<!doctype html>
-<html lang="en-US">
-<head>
- <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
- <title>jQuery Image Zoom Demo</title>
- <meta name="author" content="Jackson Huang">
-</head>
-<body>
-<div class="magnify">
-<div class="large"></div>
-<img class="small" src="./img/1.jpg" width="700" />
-</div>
-</body>
-</html>
-                  </pre>
-                  <p>上面，我们定义了<code>small</code> 对象用于显示原图，而<code>large</code>对象作为一个显示框用来显示大图的对应位置。</p>
-                <p><strong>2、mousemove事件</strong></p>
-                <p>接下来，我们通过<code>jQuery</code>插件形式来实现放大镜效果，当鼠标移动到<code>small</code>对象上方时，就会在<code>large</code> 对象中显示大图的对应位置，这就涉及到<code>mousemove</code>事件了，所以，我们需要实现<code>mousemove</code>事件的监听方法。</p>
-                <p>现在，让我们实现<code>jquery.imagezoom.js</code>插件吧！</p>
-                <pre class="brush:js;">
-      (function ($) {
-      
-       $.fn.imageZoom = function (options) {
-      
-       // The native width and height of the image.
-       var native_width = 0,
-        native_height = 0,
-        current_width = 0,
-        current_height = 0,
-        $small = $(".small"),
-        $large = $(".large");
-      
-       $(".magnify").mousemove(function (e) {
-        /* Act on the event */
-        if (!native_width && !native_height) {
-         var image_object = new Image();
-         image_object.src = $small.attr('src');
-      
-         // Gets the image native height and width.
-         native_height = image_object.height;
-         native_width = image_object.width;
-      
-         // Gets the image current height and width.
-         current_height = $small.height();
-         current_width = $small.width();
-      
-    } else {
-
-     // Gets .maginfy offset coordinates.
-     var magnify_offset = $(this).offset(),
-
-      // Gets coordinates within .maginfy.
-      mx = e.pageX - magnify_offset.left,
-      my = e.pageY - magnify_offset.top;
-
-     // Checks the mouse within .maginfy or not.
-     if (mx &lt; $(this).width() && my &lt; $(this).height() && mx &gt; 0 && my &gt; 0) {
-      $large.fadeIn(100);
-     } else {
-      $large.fadeOut(100);
-     } if ($large.is(":visible")) {
-      /* Gets the large image coordinate by ratio 
-         small.x / small.width = large.x / large.width
-         small.y / small.height = large.y / large.height
-         then we need to keep pointer in the centre, 
-         so deduct the half of .large width and height.
-        */
-        var rx = Math.round(mx / $small.width() * native_width - $large.width() / 2) * -1,
-         ry = Math.round(my / $small.height() * native_height - $large.height() / 2) * -1,
-         bgp = rx + "px " + ry + "px",
-         px = mx - $large.width() / 2,
-         py = my - $large.height() / 2;
-        $large.css({
-         left: px,
-         top: py,
-         backgroundPosition: bgp
-        });
-       }
-
-      }
-     });
-    });
-
-</pre>
-<p>上面，我实现了<code>mousemove</code>事件的监听方法，当鼠标移动到<code>magnify</code>对象中，我们需要获取当前鼠标的相对坐标位置，下面我们通过图片讲解如何获取鼠标的相对坐标位置。</p>
-<p><strong>3、相对坐标</strong></p>
-<p ><img id="theimg" alt="" onclick="window.open(this.src)" src="http://files.jb51.net/file_images/article/201512/20151220120556163.png" /></p>
-<p >图1鼠标相对坐标位置</p>
-<p>当鼠标移动到<code>magnify</code>对象中，我们需要获取鼠标在<code>magnify</code>中的相对坐标位置，这里我们把相对坐标定义为(<code>mx</code> ,<code>my</code> )，通过上图我们知道相对坐标等于(<code>pageX</code> - <code>offsetLeft</code>, <code>pageY</code> - <code>offsetTop</code>)。</p>
-<p>现在，我们已经获取鼠标在magnify对象中的坐标值，接下来，需要获取对应大图的相应坐标，这里我们把大图的对应坐标定义为(<code>rx</code> ,<code>ry</code>)，我们可以通过比例关系获取(<code>rx</code> ,<code>ry</code> )的值。</p>
-<p><code>mx / small.width （原图的宽）= rx / native_width（大图的宽）</code></p>
-<p><code>my / small.height （原图的长）= ry / native_height（大图的长）</code></p>
-<p>通过上面的比例关系，我们知道大图的坐标(<code>rx</code> ,<code>ry</code>)等于(<code>mx/small.width*native_width, my/small.height*native_height</code>)。</p>
-<p>通过上述的公式，我们可以获取大图对应坐标位置，当鼠标移动到<code>magnify</code>对象中就显示对应位置的大图部位，接下来我们需要实现大图的加载实现了。</p>
-<p><strong>4、background-position属性</strong><br />
-在实现大图加载显示之前，首先介绍CSS中背景定位<code>background-position</code>的知识。</p>
-<p ><img id="theimg" alt="" onclick="window.open(this.src)" src="http://files.jb51.net/file_images/article/201512/20151220120722321.png" /></p>
-<p >图2 css background-position</p>
-<p>上面，有一个<code>100x100</code>像素的图片它由四种颜色组成，而且每种颜色占<code>50 x50</code>像素，接下来，我们将通过修改该图片CSS的<code>background-position</code>属性值来显示该图片的不同位置。</p>
-<p>我们看到在大正方形下有两行小正方形，它们显示的颜色位置都不相同，这里我们通过修改每个div元素CSS的<code>background-position</code>属性值实现的。</p>
-<p>例如：第一行的蓝色方形，我们设置CSS的<code>background-position</code>属性为：<code>0px -50px</code>;这相当于原图往上移动50px，第一行的其他方形也通过左右和上下移动实现的。</p>
-<p>但第二行的方形就显得更加奇怪了，因为它们都由四种颜色组成，而且颜色的位置都不一样，这究竟是怎样实现的呢？</p>
-<p>例如：第二行的第一个方形，我们设置CSS的<code>background-position</code>属性为：<code>25px </code>25px;这相当于原图向下和向右移动了<code>25px </code>，由于image wrap的作用它会填充剩余位置的颜色。</p>
-<p>现在，我们已经了解到了CSS的<code>background-position</code>属性的作用，所以我们通过修改large对象的<code>background-position</code>属性来显示对应的图像部分，具体实现如下：</p>
-<pre class="brush:css;">
-$large.css({
- left: px,
- top: py,
- backgroundPosition: bgp
-});
-</pre>
-<p>上面，我们通过加载大图的方式来实现放大镜效果，接下来，我们将介绍通过调整原图的长和宽来实现放大镜效果。</p>
-<p><strong>5、mousewheel事件</strong><p>
-<p>前面，我们通过<code>mousemove</code>事件来放大图片，这里我们将通过鼠标的滚轮事件实现图片放大效果。</p>
-<p>由于，不同的浏览器有不同的滚轮事件。主要是有三种：<code>onmousewheel（IE 6/7/8）</code>、<code>mousewheel（IE9，Chrome，Safari和Opera）</code>和<code>DOMMouseScroll</code>（只有<code>Firefox</code>支持），关于这三个事件这里不做详细的介绍了。</p>
-<p>由于不同浏览器之间存在着差异，为了实现浏览器之间的兼容，所以，我们需要监听以上三种滚轮事件（<code>onmousewheel</code>，<code>mousewheel</code>和<code>DOMMouseScroll</code>），具体实现如下：</p>
-
+                  <p>先明确2个概念例如：</p>
+<p>JSON字符串:<p>
 <pre class="brush:js;">
-$(".magnify").bind('DOMMouseScroll mousewheel onmousewheel', function(e) {
-});
+  var str1 = '{ "name": "deyuyi", "sex": "man" }';
 </pre>
-
-<p>上面，我们实现了兼容不同浏览器的滚轮事件监听方法，接下来，判断滚轮向上或向下也要考虑不同浏览器的兼容性，主流的览器（<code>IE</code>、<code>Opera</code>、<code>Safari</code>、<code>Firefox</code>、<code>Chrome</code>）中<code>Firefox</code> 使用<code>detail</code>，其余四类使用<code>wheelDelta</code>；两者只在取值上不一致，代表含义一致，<code>detail</code>与<code>wheelDelta</code>只各取两个值，<code>detail</code>只取±3，<code>wheelDelta</code>只取±120，其中正数表示为向上，负数表示向下。</p>
-<p>由于<code>detail</code>和<code>wheelDelta</code>都有两个值表示向上或向下滚动，所以不同浏览器间可以通过以下方式实现兼容，具体实现如下：</p>
-
+<p>JSON对象:</p>
 <pre class="brush:js;">
-$(".magnify").bind('DOMMouseScroll mousewheel onmousewheel', function(e) {
-
- // cross-browser wheel delta
- var e = window.event || e; // old IE support.
- var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-});
-
+  var str2 = { "name": "deluyi", "sex": "man" };
 </pre>
-
-<p>上面，我们已经处理了不同浏览器滚轮监听方法，当用户滚动滚轮时需要动态地修改原图的尺寸，这里我们定义缩放比<code>scaling</code>为0.3，也就是说每当用户滚动一下滚轮原图就按0.3的比例进行缩放，具体实现如下：</p>
-
-<pre class="brush:xhtml;">
-// Gets the image scaling height and width.
-native_height += (native_height * scaling * delta);
-native_width += (native_width * scaling * delta);
-
-// Update backgroud image size.
-$large.css('background-size', native_width + "px " + native_height + "px");
-
-</pre>
-
-<p>现在，我们已经实现了通过滚轮对图片进行缩放查看的效果，完整的实现如下：<br />
-</p>
-
+<p>可以简单这样理解：</p>
+<p>JSON对象是直接可以使用JQuery操作的格式，如C#中可以用对象（类名）点出属性（方法）一样；</p>
+<p>JSON字符串仅仅只是一个字符串，一个整体，不截取的话没办法取出其中存储的数据，不能直接使用，除非你只想alert()它；</p>
+<p><strong>一、JSON字符串转换为JSON对象</strong></p>
+<p>要使用上面的str1，必须使用下面的方法先转化为JSON对象：</p>
+<p><strong>A：eval函数</strong></p>
+<p>eval函数可以直接将本质符合或者近似符合JSON格式的字符串转换为JSON对象，使用方式如：</p>
+<p>eval('(' + str + ')'); //其中str就是满足本标题描述的字符串</p>
 <pre class="brush:js;">
-(function($) {
-
- $.fn.imageZoom = function(options) {
-
-
-  // The native width and height of the image.
-  var defaults = {
-   scaling: 0.3
-  };
-
-  // Combines object defaults and options.
-  options = $.extend(defaults, options),
-   native_width = 0,
-   native_height = 0,
-   current_width = 0,
-   current_height = 0,
-   $small = $(".small"),
-   $large = $(".large");
-
-  $(".magnify").mousemove(function(e) {
-   /* Act on the event */
-   if (!native_width && !native_height) {
-    var image_object = new Image();
-    image_object.src = $small.attr('src');
-
-    // Gets the image native height and width.
-    native_height = image_object.height;
-    native_width = image_object.width;
-
-    // Gets the image current height and width.
-    current_height = $small.height();
-    current_width = $small.width();
-
-   } else {
-
-    // Gets .maginfy offset coordinates.
-    var magnify_offset = $(this).offset(),
-
-    // Gets coordinates within .maginfy.
-     mx = e.pageX - magnify_offset.left,
-     my = e.pageY - magnify_offset.top;
-
-    // Checks the mouse within .maginfy or not.
-    if (mx &lt; $(this).width() && my &lt; $(this).height() && mx &gt; 0 && my &gt; 0) {
-     $large.fadeIn(100);
-    } else {
-     $large.fadeOut(100);
-    }
-    if ($large.is(":visible")) {
-     /* Gets the large image coordinate by ratio 
-     small.x / small.width = large.x / large.width
-     small.y / small.height = large.y / large.height
-     then we need to keep pointer in the centre, 
-     so deduct the half of .large width and height.
-     */
-     var rx = Math.round(mx / $small.width() * native_width - $large.width() / 2) * -1,
-      ry = Math.round(my / $small.height() * native_height - $large.height() / 2) * -1,
-      bgp = rx + "px " + ry + "px",
-      px = mx - $large.width() / 2,
-      py = my - $large.height() / 2;
-     $large.css({
-      left: px,
-      top: py,
-      backgroundPosition: bgp
-     });
-    }
-
-   }
+  //由JSON字符串转换为JSON对象
+  var str='{ "name": "John" }';
+  var obj = eval('(' + str + ')'); 
+  alert( obj.name);
+  var str2="{ 'name': 'John' }";
+  var obj2 = eval('(' + str2 + ')'); 
+  alert( obj2.name);
+  var str3="{ name: 'John' }";
+  var obj3 = eval('(' + str3 + ')'); 
+  alert( obj3.name);
+</pre>
+<p>以上均会输出结果“john”。</p>
+<p>Eval方式可以转换以下标准和非标准格式字符串：</p>
+<pre class="brush:js;">
+  var str="{ 'name': 'John' }";
+  var str2='{ "name": "John" }';
+  var str3="{ name: 'John' }";
+</pre>
+<p><strong>B：parseJSON函数</strong></p>
+<p>另一种将标准字符串转换为JSON对象的函数是parseJSON()，使用方式如jQuery.parseJSON(str)//其中str就是满足本标题描述的字符串</p>
+<pre class="brush:js;">
+  //由JSON字符串转换为JSON对象
+  var str='{ "name": "John" }';
+  var obj = jQuery.parseJSON(str)
+  alert("1"+ obj.name);
+</pre>
+<p>以上均会输出结果“john”。</p>
+<p>此种方式仅支持标准格式：var str='{ "name": "John" }';</p>
+<p><strong>C：JSON.parse函数</strong></p>
+<p>还有一种将标准字符串转换为JSON对象的函数是JSON.parse()，使用方式如JSON.parse(str)//其中str就是满足本标题描述的字符串</p>
+<pre class="brush:js;">
+var str = '{ "name": "mady", "age": "24" }';
+var obj = JSON.parse(str);
+alert(obj.name);
+</pre>
+<p>以上均会输出结果“john”。</p>
+<p>此种方式仅支持标准格式：var str='{ "name": "John" }';</p>
+<p>参见本例下载包中：JqueryDemo3.html</p>
+<p>以上结果一致，均输出姓名，john。</p>
+<p><span style="color: #ff0000">特别注意</span>：如果obj本来就是一个JSON对象，那么使用eval（）函数转换后（哪怕是多次转换）还是JSON对象，但是使用parseJSON（）函数处理后会有问题（抛出语法异常）。</p>
+<p><strong>D：Other方式</strong></p>
+<p>如果忍不住想犯错，十分十分想解析非标准、非正规字符串，如：</p>
+<pre class="brush:js">
+  {name:mady,age:23}
+</pre>
+<p>或者</p>
+<pre class="brush:js">
+  {name:'mady',age:23}
+</pre>
+<p>以及其他的你能想到的各种本质正确的非法格式，那么有扩展库可以解决.</p>
+<p><strong>jquery-json 扩展库</strong></p>
+<p>下载地址在这里：<a target="_blank" href="http://code.google.com/p/jquery-json/">http://code.google.com/p/jquery-json/</a></p>
+<p>这个库用来扩展 jQuery ，对于 JSON 的使用，扩展了两个函数：toJSON和parseJSON</p>
+<p>toJSON 函数用来将一个普通的 JavaScript 对象序列化为 JSON 对象。<br />
+parseJSON函数用来将一个普通的 JavaScript 对象序列化为 JSON 对象too。</p>
+<pre class="brush:js;">
+  var data=$.toJSON({ x: 2, y: 3 }); 
+  var obj = jQuery.parseJSON(data); 
+  alert(obj.x); // 输出结果: 2
+  var str = {plugin: 'jquery-json', version: 2.3}; 
+  var data2=$.toJSON(str); 
+  var obj2 = jQuery.parseJSON(data2); 
+  alert(obj2.plugin);// 输出结果:jquery-json
+</pre>
+<p><strong>二、将JSON对象转换为字符串</strong></p>
+<p>可以使用toJSONString()或者全局方法JSON.stringify()将JSON对象转化为JSON字符串。
+例如：</p>
+<pre class="brush:js">
+  var last=obj.toJSONString(); //将JSON对象转化为JSON字符
+</pre>
+<p>或者</p>
+<pre class="brush:js;">
+  var last=JSON.stringify(obj); //将JSON对象转化为JSON字符
+  alert(last);
+</pre>
+<p><strong>三、解析读取JSON</strong></p>
+<p>我们通过各种方式将字符串转换为JSON对象后就是解析他了。
+如上面的例子：</p>
+<pre class="brush:js">
+  var str2 = { "name": "mady", "sex": "man" };
+</pre>
+<p>或者</p>
+<pre class="brush:js">
+  alert(str2.name);//和C#一样直接往出点…
+</pre>
+<p>弹出” mady”.</p>
+<p>我们遇到的JSON很少有这么简单的，比如复杂一点的JSON对象如：</p>
+<pre class="brush:js">
+  var str={"GetUserPostByIdResult":{"Age":"33","ID":"2server","Name":"mady"}};
+</pre>
+<p>解析用：</p>
+<pre class="brush:js">
+   alert(str.GetUserPostByIdResult.Name);//一次点不出来，我多点几次,弹出：”mady”。
+</pre>
+<p>再再复杂一点的如：</p>
+<pre class="brush:js">
+  var data=" { root: [ {'name':'6200','value':'0'}, {'name':'6101','value':'xa'}, {'name':'6102','value':'beijing'}, {'name':'6103','value':'haerbin'}]}";
+</pre>
+<p>如果你想解析一个的话，解析用：</p>
+<pre class="brush:js">
+  alert(dataObj.root[0].name);// 结果：“6200”。
+</pre>
+<p>如果你想批量的话，解析用：</p>
+<pre class="brush:js">
+  $.each(dataObj.root, function(index, item) {
+  $("#info").append(
+      "&lt;div&gt;" +index+":"+ item.name + "&lt;/div&gt;" + 
+      "&lt;div&gt;" +index+":"+ item.value + "&lt;/div&gt;&lt;hr/&gt;");
   });
-
-  $(".magnify").bind('DOMMouseScroll mousewheel onmousewheel', function(e) {
-   var image_object = new Image();
-   image_object.src = $large.attr('src');
-
-
-   // cross-browser wheel delta
-   e = window.event || e; // old IE support.
-   var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-
-   // Gets the image scaling height and width.
-   native_height += (native_height * defaults.scaling * delta);
-   native_width += (native_width * defaults.scaling * delta);
-
-   // The image can't smaller than the original.
-   if (native_height &lt; current_height) {
-    native_height = current_height;
-   }
-
-   if (native_width &lt; current_width) {
-    native_width = current_width;
-   }
-
-   // console.log("native_height: " + native_height + " native_width: " + native_width);
-
-   // Gets .maginfy offset coordinates.
-   var magnify_offset = $(this).offset(),
-    mx = e.pageX - magnify_offset.left,
-    my = e.pageY - magnify_offset.top;
-
-   // Update backgroud image size.
-   $large.css('background-size', native_width + "px " + native_height + "px");
-
-   /* Gets the large image coordinate by ratio 
-   small.x / small.width = large.x / large.width
-   small.y / small.height = large.y / large.height
-   then we need to keep pointer in the centre, 
-   so deduct the half of .large width and height.
-   */
-   var rx = Math.round(mx / $small.width() * native_width - $large.width() / 2) * -1,
-    ry = Math.round(my / $small.height() * native_height - $large.height() / 2) * -1,
-    bgp = rx + "px " + ry + "px",
-    px = mx - $large.width() / 2,
-    py = my - $large.height() / 2;
-
-   $large.css({
-    left: px,
-    top: py,
-    backgroundPosition: bgp
-   });
-  });
- };
-})(jQuery);
- 
-
 </pre>
-
-<p>上面，我们实现了放大镜效果，当我们鼠标停留在图片上方会自动放大图片的相应部位，当然我们可以通过滚轮调整放大的比例。</p>
-<p>上面我们介绍了如何实现放大镜效果，总的来说，我们可以通过两种方式实现放大镜效果，而且在文中都给出了详细的介绍，通过<code> mousemove</code>事件实现加载大图的效果，<code>mousewheel</code>事件实现动态修改原图的尺寸。</p>
-
                  <!-- 正文end -->
                   </div>
 
