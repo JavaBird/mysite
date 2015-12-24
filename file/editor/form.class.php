@@ -102,12 +102,17 @@ class form {
 		if(!defined('EDITOR_INIT')) {
 			$str = '<script type="text/javascript" src="'.JS_PATH.'ueditor/ueditor.config.js"></script>';
 			$str .= '<script type="text/javascript" src="'.JS_PATH.'ueditor/ueditor.all.js"></script>';
+			$str .= '<script type="text/javascript" src="'.JS_PATH.'ueditor/lang/zh-cn/zh-cn.js"></script>';
 			define('EDITOR_INIT', 1);
 		}
 		
 		$str .= "<script type=\"text/javascript\">\r\n";
 		
-		$str .= " var ue = UE.getEditor('".$textareaid."');";
+		$str .= "window.UEDITOR_HOME_URL ='".APP_PATH."';";
+		
+		$str .= " var ue = UE.getEditor('".$textareaid."',{
+	                 serverUrl:\"".APP_PATH."index.php?m=ueditor&c=ueditor&a=ueditor&module=".$module."&catid=".$catid."&dosubmit=1\"
+	           });"; 
 		
 		$str .= "</script>";
 		    
@@ -135,7 +140,7 @@ class form {
 		$str .= '</script>';  */
 		
 		
-		
+		/* 
 		$ext_str = "<div class='editor_bottom'>";
 		if(!defined('IMAGES_INIT')) {
 			$ext_str .= '<script type="text/javascript" src="'.JS_PATH.'swfupload/swf2ckeditor.js"></script>';
@@ -148,7 +153,7 @@ class form {
 		</table></div>";
 		$ext_str .= "</div>";
 		if(is_ie()) $ext_str .= "<div style='display:none'><OBJECT id='PC_Capture' classid='clsid:021E8C6F-52D4-42F2-9B36-BCFBAD3A0DE4'><PARAM NAME='_Version' VALUE='0'><PARAM NAME='_ExtentX' VALUE='0'><PARAM NAME='_ExtentY' VALUE='0'><PARAM NAME='_StockProps' VALUE='0'></OBJECT></div>";
-		$str .= $ext_str;
+		$str .= $ext_str; */
 		return $str;
 	}
 	
