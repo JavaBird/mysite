@@ -119,139 +119,262 @@
                 </div>
                 <div class="showContext">
                   <!-- start -->
-                  <blockquote><strong>[前言]　</strong>在WEB数据传输过程中，json是以文本，即字符串的轻量级形式传递的，而客户端一般用JS操作的是接收到的JSON对象，所以，JSON对象和JSON字符串之间的相互转换、JSON数据的解析是关键。今天我们通过实例具体讲述一下<code>jQuery</code>解析<code>json</code>串的方法。</blockquote>
-
+                  <blockquote><strong>[前言]　</strong>
+                      本文主要介绍Java编程中final关键字的使用,是Java入门学习中的基础知识,需要的朋友可以参考下
+                  </blockquote>
                   <div class="realcontext">
                   <!-- 正文 -->
-                  <p>先明确2个概念例如：</p>
-<p>JSON字符串:<p>
-<pre class="brush:js;">
-  var str1 = '{ "name": "deyuyi", "sex": "man" }';
+                 <p>在Java中声明属性、方法和类时，可使用关键字final来修饰。final变量即为常量，只能赋值一次；final方法不能被子类重写；final类不能被继承。</p>
+                     <p><strong>1．final成员</strong></p>
+                      <p>声明 final 字段有助于优化器作出更好的优化决定，因为如果编译器知道字段的值不会更改，那么它能安全地在寄存器中高速缓存该值。final 字段还通过让编译器强制该字段为只读来提供额外的安全级别。</p>
+                      <p><strong>1.1 关于final成员赋值</strong></p>
+                      <p>1）在java中，普通变量可默认初始化。但是final类型的变量必须显式地初始化。</p>
+                      <p>2）final 成员能且只能被初始化一次。</p>
+                      <p>3）final成员必须在声明时（在final变量定义时直接给其赋值）或者在构造函数中被初始化，而不能在其它的地方被初始化。</p>
+                      <p>示例1 Bat.java</p>
+                      <pre class="brush:java;">
+public class Bat {
+  final double PI = 3.14; // 在定义时赋值
+  final int i; // 因为要在构造函数中进行初始化，所以此处便不可再赋值
+  final List&lt;Bat&gt; list; // 因为要在构造函数中进行初始化，所以此处便不可再赋值
+
+  Bat() {
+    i = 100;
+    list = new LinkedList&lt;Bat&gt;();
+  }
+
+  Bat(int ii, List&lt;Bat&gt; l) {
+    i = ii;
+    list = l;
+  }
+
+  public static void main(String[] args) {
+    Bat b = new Bat();
+    b.list.add(new Bat());
+    // b.i=25;
+    // b.list=new ArrayList&lt;Bat&gt;();
+    System.out.println("I=" + b.i + " List Type:" + b.list.getClass());
+    b = new Bat(23, new ArrayList&lt;Bat&gt;());
+    b.list.add(new Bat());
+    System.out.println("I=" + b.i + " List Type:" + b.list.getClass());
+  }
+}
+                      </pre>
+                      <p>结果:</p>
+                      <pre class="brush:plain;">
+I=100 List Type:class java.util.LinkedList
+I=23 List Type:class java.util.ArrayList
 </pre>
-<p>JSON对象:</p>
-<pre class="brush:js;">
-  var str2 = { "name": "deluyi", "sex": "man" };
+<p>在main方法中有两行语句注释掉了，如果你去掉注释，程序便无法通过编译，这便是说，不论是i的值或是list的类型，一旦初始化，确实无法再更改。然而b可以通过重新初始化来指定i的值或list的类型。</p>
+                     <p><strong>1.2 final引用字段的无效初始化</strong></p>
+                      <p>要正确使用final字段有点麻烦，对于其构造子能抛出异常的对象引用来说尤其如此。因为 final 字段在每个构造器中必须只初始化一次，如果 final 对象引用的构造器可能抛出异常，编译器可能会报错，说该字段没有被初始化。编译器一般比较智能化，足以发现在两个互斥代码分支（比如，if...else 块）的每个分支中的初始化恰好只进行了一次，但是它对 try...catch 块通常不会如此“宽容”。</p>
+                      <p>下面这段代码通常会出现问题。</p>
+                      <pre class="brush:java">
+class Thingie {
+  public static Thingie getDefaultThingie() {
+    return new Thingie();
+  }
+}
+
+public class Foo {
+  private final Thingie thingie;
+
+  public Foo() {
+    try {
+      thingie = new Thingie();
+    } catch (Exception e) {
+      thingie = Thingie.getDefaultThingie();//Error:The final field thingie may already have been assigned
+    }
+  }
+}
+
+                      </pre>
+                      <p>你可以这样修改。</p>
+                      <pre class="brush:java;">
+public class Foo {
+  private final Thingie thingie;
+
+  public Foo() {
+    Thingie tempThingie;
+    try {
+      tempThingie = new Thingie();
+    } catch (Exception e) {
+      tempThingie = Thingie.getDefaultThingie();
+    }
+    thingie = tempThingie;
+  }
+}
+
+                      </pre>
+                      <p><strong>1.3 关于final成员使用</strong></p>
+                      <p>当你在类中定义变量时，在其前面加上final关键字，那便是说，这个变量一旦被初始化便不可改变，这里不可改变的意思对基本类型来说是其值不可变，而对于对象变量来说其引用不可再变。然而，对象其本身却是可以被修改的，Java并未提供使任何对象恒定不变的途径。这一限制同样适合数组，它也是对象。</p>
+                      <p>示例2：</p>
+                      <pre class="brush:java;">
+private final int VAL_ONE=9;
+private static final int VAL_TWO=99;
+public static final int VAL_THREE=999;
 </pre>
-<p>可以简单这样理解：</p>
-<p>JSON对象是直接可以使用JQuery操作的格式，如C#中可以用对象（类名）点出属性（方法）一样；</p>
-<p>JSON字符串仅仅只是一个字符串，一个整体，不截取的话没办法取出其中存储的数据，不能直接使用，除非你只想alert()它；</p>
-<p><strong>一、JSON字符串转换为JSON对象</strong></p>
-<p>要使用上面的str1，必须使用下面的方法先转化为JSON对象：</p>
-<p><strong>A：eval函数</strong></p>
-<p>eval函数可以直接将本质符合或者近似符合JSON格式的字符串转换为JSON对象，使用方式如：</p>
-<p>eval('(' + str + ')'); //其中str就是满足本标题描述的字符串</p>
-<pre class="brush:js;">
-  //由JSON字符串转换为JSON对象
-  var str='{ "name": "John" }';
-  var obj = eval('(' + str + ')'); 
-  alert( obj.name);
-  var str2="{ 'name': 'John' }";
-  var obj2 = eval('(' + str2 + ')'); 
-  alert( obj2.name);
-  var str3="{ name: 'John' }";
-  var obj3 = eval('(' + str3 + ')'); 
-  alert( obj3.name);
+<p>由于VAL_ONE 和VAL_TOW 是带有编译期数值的final 原始类型，所以它们二者均可以用作编译期常量，并且没有重大区别。VAL_THREE是一种更加典型的对常量进行定义的方式：定义为 public，则可以被用于包之外；定义为 static 来强调只有一份；定义为 final 来说明它是一个常量。</p>
+<p>final标记的变量即成为常量，但这个“常量”也只能在这个类的内部使用，不能在类的外部直接使用。但是当我们用public static final 共同标记常量时，这个常量就成为全局的常量（一个既是static又是final的字段只占据一段不能改变的存储空间）。而且这样定义的常量只能在定义时赋值，其他地方都不行。</p>
+<p>示例3</p>
+ <pre class="brush:java;">
+class Value {
+  int i;
+
+  public Value(int i) {
+    this.i = i;
+  }
+}
+
+public class FinalData {
+  private static Random rand = new Random();
+
+  private String id;
+
+  public FinalData(String id) {
+    this.id = id;
+  }
+
+  private final int i4 = rand.nextInt(20);
+
+  static final int i5 = rand.nextInt(20);
+
+  public String toString() {
+    return id + ":" + "i4:" + i4 + ", i5=" + i5;
+  }
+
+  public static void main(String[] args) {
+    FinalData fd1 = new FinalData("fd1");
+    System.out.println(fd1);
+    System.out.println("Creating new FinalData");
+    FinalData fd2 = new FinalData("fd2");
+    System.out.println(fd1);
+    System.out.println(fd2);
+  }
+}
 </pre>
-<p>以上均会输出结果“john”。</p>
-<p>Eval方式可以转换以下标准和非标准格式字符串：</p>
-<pre class="brush:js;">
-  var str="{ 'name': 'John' }";
-  var str2='{ "name": "John" }';
-  var str3="{ name: 'John' }";
+<p>结果</p>
+                      <pre class="brush:plain;">
+fd1:i4:6, i5=3
+Creating new FinalData
+fd1:i4:6, i5=3
+fd2:i4:17, i5=3
 </pre>
-<p><strong>B：parseJSON函数</strong></p>
-<p>另一种将标准字符串转换为JSON对象的函数是parseJSON()，使用方式如jQuery.parseJSON(str)//其中str就是满足本标题描述的字符串</p>
-<pre class="brush:js;">
-  //由JSON字符串转换为JSON对象
-  var str='{ "name": "John" }';
-  var obj = jQuery.parseJSON(str)
-  alert("1"+ obj.name);
+<p>示例部分展示了将final 数值定义为static（i5） 和非static（i4） 的区别。此区别只有在数值在运行期内被初始化时才会显现，这是因为编译器对编译期数值一视同仁。（并且它们可能因优化而消失。）当你运行程序时，就会看到这个区别。请注意，在fd1 和fd2 中， i5 的值是不可以通过创建第二个FinalData 对象而加以改变的。这是因为它是 static，在装载时已被初始化，而不是每次创建新对象时都初始化。</p>
+ <p>示例4</p>
+                      <pre class="brush:java;">
+class Value {
+  int i;
+
+  public Value(int i) {
+    this.i = i;
+  }
+}
+
+public class … {
+  private Value v1=new Value(11);
+  private final Value v2=new Value(22);
+  private static final Value v3=new Value(33);
+  …
+}
+
+public static void main(String[] args) {
+  …
+  fd1.v2.i++;// OK--Object isn't constant!
+  fd1.v1=new Value(9);//OK--not final
+  fd1.v2=new Value(0);//Error:Can't change reference
+  fd1.v3=new Value(1);//Error:Can't change reference
+  …
+}
 </pre>
-<p>以上均会输出结果“john”。</p>
-<p>此种方式仅支持标准格式：var str='{ "name": "John" }';</p>
-<p><strong>C：JSON.parse函数</strong></p>
-<p>还有一种将标准字符串转换为JSON对象的函数是JSON.parse()，使用方式如JSON.parse(str)//其中str就是满足本标题描述的字符串</p>
-<pre class="brush:js;">
-var str = '{ "name": "mady", "age": "24" }';
-var obj = JSON.parse(str);
-alert(obj.name);
+<p>从v1 到v3 的变量说明了final 引用的意义。正如你在main( )中所看到的，不能因为v2 是final 的，就认为你无法改变它的值。由于它是一个引用，final 意味着你无法将v2 再次指向另一个新的对象。</p>
+                      <p>示例5</p>
+                      <pre class="brush:java;">
+public class … {
+  private final int[] a={1,2,3,4,5,6};
+  …
+}
+
+public static void main(String[] args) {
+  …
+  for(int i=0;i&lt;fd1.a.length;i++)
+ fd1.a[i]++;// OK--Object isn't constant!
+  fd1.a=new int[3];//Error:Can't change reference  …
+}
 </pre>
-<p>以上均会输出结果“john”。</p>
-<p>此种方式仅支持标准格式：var str='{ "name": "John" }';</p>
-<p>参见本例下载包中：JqueryDemo3.html</p>
-<p>以上结果一致，均输出姓名，john。</p>
-<p><span style="color: #ff0000">特别注意</span>：如果obj本来就是一个JSON对象，那么使用eval（）函数转换后（哪怕是多次转换）还是JSON对象，但是使用parseJSON（）函数处理后会有问题（抛出语法异常）。</p>
-<p><strong>D：Other方式</strong></p>
-<p>如果忍不住想犯错，十分十分想解析非标准、非正规字符串，如：</p>
-<pre class="brush:js">
-  {name:mady,age:23}
+<p>对数组具有同样的意义（可以改变它的值，但不能指向一个新的对象），数组是另一种引用。</p>
+                      <p><strong>1.4 解决final数组的局限性</strong></p>
+                      <p>尽管数组引用能被声明成 final，但是该数组的元素却不能。这意味着暴露 public final 数组字段的或者通过它们的方法将引用返回给这些字段的类都不是不可改变的。</p>
+                     <pre class="brush:java;">
+// Not immutable -- the states array could be modified by a malicious
+// callerpublic
+class DangerousStates {
+  private final String[] states = new String[] { "Alabama", "Alaska", "ect" };
+
+  public String[] getStates() {
+    return states;
+  }
+}
 </pre>
-<p>或者</p>
-<pre class="brush:js">
-  {name:'mady',age:23}
+<p>同样，尽管对象引用可以被声明成 final 字段，而它所引用的对象仍可能是可变的。如果想要使用 final 字段创建不变的对象，必须防止对数组或可变对象的引用“逃离”你的类。要不用重复克隆该数组做到这一点，一个简单的方法是将数组转变成 List。</p>
+                      <pre class="brush:java;">
+// Immutable -- returns an unmodifiable List insteadpublic
+class SafeStates {
+  private final String[] states = new String[] { "Alabama", "Alaska", "ect" };
+
+  private final List statesAsList = new AbstractList() {
+    public Object get(int n) {
+      return states[n];
+    }
+
+    public int size() {
+      return states.length;
+    }
+  };
+
+  public List getStates() {
+    return statesAsList;
+  }
+}
 </pre>
-<p>以及其他的你能想到的各种本质正确的非法格式，那么有扩展库可以解决.</p>
-<p><strong>jquery-json 扩展库</strong></p>
-<p>下载地址在这里：<a target="_blank" href="http://code.google.com/p/jquery-json/">http://code.google.com/p/jquery-json/</a></p>
-<p>这个库用来扩展 jQuery ，对于 JSON 的使用，扩展了两个函数：toJSON和parseJSON</p>
-<p>toJSON 函数用来将一个普通的 JavaScript 对象序列化为 JSON 对象。<br />
-parseJSON函数用来将一个普通的 JavaScript 对象序列化为 JSON 对象too。</p>
-<pre class="brush:js;">
-  var data=$.toJSON({ x: 2, y: 3 }); 
-  var obj = jQuery.parseJSON(data); 
-  alert(obj.x); // 输出结果: 2
-  var str = {plugin: 'jquery-json', version: 2.3}; 
-  var data2=$.toJSON(str); 
-  var obj2 = jQuery.parseJSON(data2); 
-  alert(obj2.plugin);// 输出结果:jquery-json
+<p><strong>1.5 关于final参数使用</strong></p>
+                  <p>还有一种用法是定义方法中的参数为final，对于基本类型的变量，这样做并没有什么实际意义，因为基本类型的变量在调用方法时是传值的，也就是说你可以在方法中更改这个参数变量而不会影响到调用语句，然而对于对象变量，却显得很实用，因为对象变量在传递时是传递其引用，这样你在方法中对对象变量的修改也会影响到调用语句中的对象变量，当你在方法中不需要改变作为参数的对象变量时，明确使用final进行声明，会防止你无意的修改而影响到调用方法。</p>
+                 <p><strong>1.6 关于内部类中的参数变量</strong></p>
+                  <p>另外方法中的内部类在用到方法中的参变量时，此参数变量必须声明为final才可使用。</p>
+                  <p>示例6 INClass.java</p>
+                  <pre class="brush:java;">
+public class INClass {
+  void innerClass(final String str) {
+    class IClass {
+      IClass() {
+       System.out.println(str);
+      }
+    }
+    IClass ic = new IClass();
+  }
+
+  public static void main(String[] args) {
+    INClass inc = new INClass();
+    inc.innerClass("Hello");
+  }
+}
 </pre>
-<p><strong>二、将JSON对象转换为字符串</strong></p>
-<p>可以使用toJSONString()或者全局方法JSON.stringify()将JSON对象转化为JSON字符串。
-例如：</p>
-<pre class="brush:js">
-  var last=obj.toJSONString(); //将JSON对象转化为JSON字符
-</pre>
-<p>或者</p>
-<pre class="brush:js;">
-  var last=JSON.stringify(obj); //将JSON对象转化为JSON字符
-  alert(last);
-</pre>
-<p><strong>三、解析读取JSON</strong></p>
-<p>我们通过各种方式将字符串转换为JSON对象后就是解析他了。
-如上面的例子：</p>
-<pre class="brush:js">
-  var str2 = { "name": "mady", "sex": "man" };
-</pre>
-<p>或者</p>
-<pre class="brush:js">
-  alert(str2.name);//和C#一样直接往出点…
-</pre>
-<p>弹出” mady”.</p>
-<p>我们遇到的JSON很少有这么简单的，比如复杂一点的JSON对象如：</p>
-<pre class="brush:js">
-  var str={"GetUserPostByIdResult":{"Age":"33","ID":"2server","Name":"mady"}};
-</pre>
-<p>解析用：</p>
-<pre class="brush:js">
-   alert(str.GetUserPostByIdResult.Name);//一次点不出来，我多点几次,弹出：”mady”。
-</pre>
-<p>再再复杂一点的如：</p>
-<pre class="brush:js">
-  var data=" { root: [ {'name':'6200','value':'0'}, {'name':'6101','value':'xa'}, {'name':'6102','value':'beijing'}, {'name':'6103','value':'haerbin'}]}";
-</pre>
-<p>如果你想解析一个的话，解析用：</p>
-<pre class="brush:js">
-  alert(dataObj.root[0].name);// 结果：“6200”。
-</pre>
-<p>如果你想批量的话，解析用：</p>
-<pre class="brush:js">
-  $.each(dataObj.root, function(index, item) {
-  $("#info").append(
-      "&lt;div&gt;" +index+":"+ item.name + "&lt;/div&gt;" + 
-      "&lt;div&gt;" +index+":"+ item.value + "&lt;/div&gt;&lt;hr/&gt;");
-  });
-</pre>
-                 <!-- 正文end -->
+<p><strong>2．final方法</strong></p>
+                  <p><strong>2.1 final方法用途</strong></p>
+                  <p>1）为了确保某个函数的行为在继承过程中保持不变，并且不能被覆盖（overridding），可以使用final方法。</p>
+                  <p>2）class中所有的private和static方法自然就是final。</p>
+                  <p><strong>2.2 final与private关键字</strong></p>
+                  <p>类中所有的private方法都隐式地指定是final的。由于无法取用private方法，所以也就无法覆盖它。</p>
+                  <p>“覆盖”只有在某方法是基类的接口的一部分时s才会出现。即，必须能将一个对象向上转型为它的基本类型并调用相同的方法。如果某方法为private，它就不是基类的接口的一部分。它仅是一些隐藏于类中的代码，只不过是具有相同的名称而已。但如果在导出类以相同的方法生成一个public、protected或包访问权限方法的话，该方法就不会产生在基类中出现的“仅具有相同名称”的情况。此时，你并没有覆盖该方法，仅是生成了一个新的方法。由于private方法无法触及而且能有效隐藏，所以除了把它看成是因为它所归属的类的组织结构的原因而存在外，其他任何事物都不需要考虑它。</p>
+                  <p><strong>3．final类</strong></p>
+                  <p>将某个类的整体定义为final 时，该类无法被继承。而且由于final类禁止继承，所以final类中所有的方法都隐式指定为final的，因为无法覆盖它们。</p>
+                  <p>final 用于类或方法是为了防止方法间的链接被破坏。例如，假定类 X 的某个方法的实现假设了方法 M 将以某种方式工作。将 X 或 M 声明成 final 将防止派生类以这种方式重新定义 M，从而导致 X 的工作不正常。尽管不用这些内部相关性来实现 X 可能会更好，但这不总是可行的，而且使用 final 可以防止今后这类不兼容的更改。</p>
+                  <p><strong>PS：final,finally和finallize的区别</strong></p>
+                  <p>final用于申明属性，方法和类，表示属性不可变，方法不可以被覆盖，类不可以被继承。</br>
+                      finally是异常处理语句结构中，表示总是执行的部分。</br>
+                      finallize表示是object类一个方法，在垃圾回收机制中执行的时候会被调用被回收对象的方法。
+                  </p>
+                  <!-- 正文end -->
                   </div>
 
 <!-- end -->
@@ -381,10 +504,10 @@ parseJSON函数用来将一个普通的 JavaScript 对象序列化为 JSON 对�
     <script type="text/javascript" src="js/scripts/shAutoloader.js"></script>
   <script type="text/javascript">
 
-    window.changyan.api.config({
+  /*  window.changyan.api.config({
                           appid: 'cys6D9dK0',
                           conf: 'prod_0db8abb8879c8ad0337fab595f58dd51'
-                      });
+                      });*/
    
 
 
